@@ -72,8 +72,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\ApplicationStyle.cs" />
-    <Compile Include="Core\ApplicationBasics.cs" />
+    <Compile Include="Core\ApplicationBasics.cs">
+      <DependentUpon>IApplicationBasics.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Core\ApplicationStyle.cs">
+      <DependentUpon>IApplicationStyle.cs</DependentUpon>
+    </Compile>
     <Compile Include="Core\IApplicationBasics.cs" />
     <Compile Include="Core\IApplicationStyle.cs" />
     <Compile Include="MainWindow.xaml.cs">
