@@ -1,14 +1,29 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace PingResponseLog.Core
 {
     public class ApplicationBasics : IApplicationBasics
     {
+        private readonly IApplicationSettings _applicationSettings;
+
+        /// <summary>
+        ///     Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.
+        /// </summary>
+        public ApplicationBasics(IApplicationSettings applicationSettings)
+        {
+            if(applicationSettings == null)
+            {
+                throw new ArgumentNullException(nameof(applicationSettings));
+            }
+            _applicationSettings = applicationSettings;
+        }
+
         public void BrowseLoggingFolder()
         {
             var folderDialog = new FolderBrowserDialog
             {
-                SelectedPath = GetLoggingPath()
+                SelectedPath = _applicationSettings.LoggingPath
             };
 
             var result = folderDialog.ShowDialog();
@@ -16,9 +31,7 @@ namespace PingResponseLog.Core
             {
                 return;
             }
-
-            Properties.Settings.Default.LoggingPath = folderDialog.SelectedPath;
-            Properties.Settings.Default.Save();
+            _applicationSettings.LoggingPath = folderDialog.SelectedPath;
         }
 
         public string GetLoggingPath()

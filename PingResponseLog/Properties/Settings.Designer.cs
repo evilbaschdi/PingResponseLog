@@ -70,5 +70,53 @@ namespace PingResponseLog.Properties {
                 this["Theme"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int TimeSpanHours {
+            get {
+                return ((int)(this["TimeSpanHours"]));
+            }
+            set {
+                this["TimeSpanHours"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int TimeSpanMinutes {
+            get {
+                return ((int)(this["TimeSpanMinutes"]));
+            }
+            set {
+                this["TimeSpanMinutes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int TimeSpanSeconds {
+            get {
+                return ((int)(this["TimeSpanSeconds"]));
+            }
+            set {
+                this["TimeSpanSeconds"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string InterNetworkType {
+            get {
+                return ((string)(this["InterNetworkType"]));
+            }
+            set {
+                this["InterNetworkType"] = value;
+            }
+        }
     }
 }

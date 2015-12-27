@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using PingResponseLog.Core;
+using PingResponseLog.Internal;
 
 namespace PingResponseLog
 {
@@ -18,159 +17,67 @@ namespace PingResponseLog
     {
         public MainWindow CurrentHiddenInstance { get; set; }
 
-        private List<string> _addressList;
         private DispatcherTimer _dispatcherTimer;
         private readonly IApplicationStyle _style;
+        private readonly IApplicationSettings _applicationSettings;
         private readonly IApplicationBasics _basics;
-        private string _loggingPath;
-        private DateTime _initDateTime;
+        private readonly IPingHelper _pingHelper;
+        private readonly IPingProcessor _pingProcessor;
+        private int _overrideProtection;
+        private int _timeSpanHours;
+        private int _timeSpanMinutes;
+        private int _timeSpanSeconds;
 
         public MainWindow()
         {
             _style = new ApplicationStyle(this);
-            _basics = new ApplicationBasics();
+            _applicationSettings = new ApplicationSettings();
+            _basics = new ApplicationBasics(_applicationSettings);
             InitializeComponent();
             _style.Load();
-            ValidateForm();
+            _pingHelper = new PingHelper(_applicationSettings);
+            _pingProcessor = new PingProcessor(_pingHelper, _applicationSettings);
+            Load();
         }
 
-        private void ValidateForm()
+        private void Load()
         {
-            Addresses.Text = Properties.Settings.Default.Addresses;
-            _loggingPath = _basics.GetLoggingPath();
-            LoggingPath.Text = _loggingPath;
-            _initDateTime = DateTime.Now;
+            Addresses.Text = _applicationSettings.Addresses;
+            LoggingPath.Text = _applicationSettings.LoggingPath;
+            TimeSpanHours.Value = _applicationSettings.TimeSpanHours;
+            TimeSpanMinutes.Value = _applicationSettings.TimeSpanMinutes;
+            TimeSpanSeconds.Value = _applicationSettings.TimeSpanSeconds;
+
+            switch(_applicationSettings.InterNetworkType)
+            {
+                case "V4":
+                    V4.IsChecked = true;
+                    V6.IsChecked = false;
+                    break;
+
+                case "V6":
+                    V4.IsChecked = false;
+                    V6.IsChecked = true;
+                    break;
+            }
+
+            _overrideProtection = 1;
         }
 
-        #region ping
+        #region Ping
 
         private void SetTimer()
         {
             _dispatcherTimer = new DispatcherTimer();
             _dispatcherTimer.Tick += PingTimerOnTick;
-            _dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
+            _timeSpanHours = _applicationSettings.TimeSpanHours;
+            _timeSpanMinutes = _applicationSettings.TimeSpanMinutes;
+            _timeSpanSeconds = _applicationSettings.TimeSpanSeconds;
+            _dispatcherTimer.Interval = new TimeSpan(_timeSpanHours, _timeSpanMinutes, _timeSpanSeconds);
             _dispatcherTimer.Start();
         }
 
-        private void SetAddressList()
-        {
-            _addressList = new List<string>();
-
-            if(Addresses.Text.Contains(","))
-            {
-                foreach(var address in Addresses.Text.Split(','))
-                {
-                    _addressList.Add(address.Trim());
-                }
-            }
-            else
-            {
-                _addressList.Add(Addresses.Text.Trim());
-            }
-        }
-
-        private void PingTimerOnTick(object sender, EventArgs e)
-        {
-            CallPing();
-        }
-
-        private async void CallPing()
-        {
-            foreach(var address in _addressList)
-            {
-                var reply = await new Ping().SendPingAsync(address);
-                var result = $"{DateTime.Now}, {address}, ";
-                switch(reply.Status)
-                {
-                    case IPStatus.Success:
-                        result += $"{reply.RoundtripTime} ms";
-                        break;
-
-                    case IPStatus.TimedOut:
-                        result += $"timeout";
-                        break;
-
-                    case IPStatus.DestinationNetworkUnreachable:
-                        break;
-
-                    case IPStatus.DestinationHostUnreachable:
-                        break;
-
-                    case IPStatus.DestinationProtocolUnreachable:
-                        break;
-
-                    case IPStatus.DestinationPortUnreachable:
-                        break;
-
-                    case IPStatus.NoResources:
-                        break;
-
-                    case IPStatus.BadOption:
-                        break;
-
-                    case IPStatus.HardwareError:
-                        break;
-
-                    case IPStatus.PacketTooBig:
-                        break;
-
-                    case IPStatus.BadRoute:
-                        break;
-
-                    case IPStatus.TtlExpired:
-                        break;
-
-                    case IPStatus.TtlReassemblyTimeExceeded:
-                        break;
-
-                    case IPStatus.ParameterProblem:
-                        break;
-
-                    case IPStatus.SourceQuench:
-                        break;
-
-                    case IPStatus.BadDestination:
-                        break;
-
-                    case IPStatus.DestinationUnreachable:
-                        break;
-
-                    case IPStatus.TimeExceeded:
-                        break;
-
-                    case IPStatus.BadHeader:
-                        break;
-
-                    case IPStatus.UnrecognizedNextHeader:
-                        break;
-
-                    case IPStatus.IcmpError:
-                        break;
-
-                    case IPStatus.DestinationScopeMismatch:
-                        break;
-
-                    case IPStatus.Unknown:
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                result += Environment.NewLine;
-                Result.Text += result;
-                File.AppendAllText($@"{_loggingPath}\PingResponseLog_{_initDateTime.ToString("yyyy-MM-dd_HHmm")}.txt", result);
-            }
-        }
-
-        private void PingOnClick(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.Addresses = Addresses.Text;
-            Properties.Settings.Default.Save();
-            SetAddressList();
-            SetTimer();
-        }
-
-        #endregion ping
+        #endregion Ping
 
         #region Flyout
 
@@ -224,22 +131,60 @@ namespace PingResponseLog
         private void BrowseLoggingPathClick(object sender, RoutedEventArgs e)
         {
             _basics.BrowseLoggingFolder();
-            LoggingPath.Text = Properties.Settings.Default.LoggingPath;
-            _loggingPath = Properties.Settings.Default.LoggingPath;
-            ValidateForm();
+            LoggingPath.Text = _applicationSettings.LoggingPath;
+            Load();
         }
 
         private void LoggingPathOnLostFocus(object sender, RoutedEventArgs e)
         {
             if(Directory.Exists(LoggingPath.Text))
             {
-                Properties.Settings.Default.LoggingPath = LoggingPath.Text;
-                Properties.Settings.Default.Save();
-                _loggingPath = Properties.Settings.Default.LoggingPath;
+                _applicationSettings.LoggingPath = LoggingPath.Text;
             }
-            ValidateForm();
+            Load();
         }
 
         #endregion Logging
+
+        #region Events
+
+        private void TimeSpanHoursOnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            _applicationSettings.TimeSpanHours = Convert.ToInt32(TimeSpanHours.Value);
+        }
+
+        private void TimeSpanMinutesOnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            _applicationSettings.TimeSpanMinutes = Convert.ToInt32(TimeSpanMinutes.Value);
+        }
+
+        private void TimeSpanSecondsOnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            _applicationSettings.TimeSpanSeconds = Convert.ToInt32(TimeSpanSeconds.Value);
+        }
+
+        private void PingOnClick(object sender, RoutedEventArgs e)
+        {
+            _applicationSettings.Addresses = Addresses.Text;
+            SetTimer();
+            Result.Text += _pingProcessor.CallPing;
+        }
+
+        private void PingTimerOnTick(object sender, EventArgs e)
+        {
+            Result.Text += _pingProcessor.CallPing;
+        }
+
+        private void InterNetwork(object sender, RoutedEventArgs e)
+        {
+            if(_overrideProtection == 0)
+            {
+                return;
+            }
+            var radiobutton = (RadioButton) sender;
+            _applicationSettings.InterNetworkType = radiobutton.Name;
+        }
+
+        #endregion Events
     }
 }
