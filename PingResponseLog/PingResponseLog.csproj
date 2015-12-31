@@ -37,6 +37,9 @@
     <DocumentationFile>bin\Release\PingResponseLog.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EvilBaschdi.Core">
+      <HintPath>..\..\EvilBaschdi.Core\EvilBaschdi.Core\bin\Release\EvilBaschdi.Core.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.1.3.266, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.1.3-ALPHA266\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
@@ -134,12 +137,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EvilBaschdi.Core\EvilBaschdi.Core\EvilBaschdi.Core.csproj">
-      <Project>{8a06a423-244f-404f-aad8-53de2ee2aed7}</Project>
-      <Name>EvilBaschdi.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
