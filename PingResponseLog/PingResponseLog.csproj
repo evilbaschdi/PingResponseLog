@@ -136,7 +136,7 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\EvilBaschdi.Core\EvilBaschdi.Core\EvilBaschdi.Core.csproj">
+    <ProjectReference Include="..\EvilBaschdi.Core\EvilBaschdi.Core\EvilBaschdi.Core.csproj">
       <Project>{8a06a423-244f-404f-aad8-53de2ee2aed7}</Project>
       <Name>EvilBaschdi.Core</Name>
     </ProjectReference>
