@@ -6,6 +6,8 @@ using PingResponseLog.Core;
 
 namespace PingResponseLog.Internal
 {
+    /// <summary>
+    /// </summary>
     public class PingProcessor : IPingProcessor
     {
         private readonly IPingHelper _pingHelper;
@@ -29,6 +31,8 @@ namespace PingResponseLog.Internal
             _applicationSettings = applicationSettings;
         }
 
+        /// <summary>
+        /// </summary>
         public string CallPing
         {
             get

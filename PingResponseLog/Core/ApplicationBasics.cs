@@ -3,6 +3,8 @@ using System.Windows.Forms;
 
 namespace PingResponseLog.Core
 {
+    /// <summary>
+    /// </summary>
     public class ApplicationBasics : IApplicationBasics
     {
         private readonly IApplicationSettings _applicationSettings;
@@ -19,6 +21,8 @@ namespace PingResponseLog.Core
             _applicationSettings = applicationSettings;
         }
 
+        /// <summary>
+        /// </summary>
         public void BrowseLoggingFolder()
         {
             var folderDialog = new FolderBrowserDialog
@@ -34,11 +38,13 @@ namespace PingResponseLog.Core
             _applicationSettings.LoggingPath = folderDialog.SelectedPath;
         }
 
+        /// <summary>
+        /// </summary>
         public string GetLoggingPath()
         {
-            return string.IsNullOrWhiteSpace(Properties.Settings.Default.LoggingPath)
+            return string.IsNullOrWhiteSpace(_applicationSettings.LoggingPath)
                 ? ""
-                : Properties.Settings.Default.LoggingPath;
+                : _applicationSettings.LoggingPath;
         }
     }
 }

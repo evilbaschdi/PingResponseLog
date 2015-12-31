@@ -7,6 +7,8 @@ using PingResponseLog.Core;
 
 namespace PingResponseLog.Internal
 {
+    /// <summary>
+    /// </summary>
     public class PingHelper : IPingHelper
     {
         private readonly IApplicationSettings _applicationSettings;
@@ -24,6 +26,8 @@ namespace PingResponseLog.Internal
             _applicationSettings = applicationSettings;
         }
 
+        /// <summary>
+        /// </summary>
         public List<string> AddressList
         {
             get
@@ -42,6 +46,8 @@ namespace PingResponseLog.Internal
             }
         }
 
+        /// <summary>
+        /// </summary>
         public string GetDnsName(string input)
         {
             IPAddress address;
@@ -65,6 +71,8 @@ namespace PingResponseLog.Internal
             return "error resolving ip or dns name";
         }
 
+        /// <summary>
+        /// </summary>
         public string GetStatus(PingReply reply)
         {
             string status;
@@ -168,6 +176,8 @@ namespace PingResponseLog.Internal
             return status;
         }
 
+        /// <summary>
+        /// </summary>
         public string PingResponseLogFileName
         {
             get

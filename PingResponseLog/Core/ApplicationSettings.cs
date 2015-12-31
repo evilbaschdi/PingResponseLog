@@ -1,7 +1,12 @@
 ﻿namespace PingResponseLog.Core
 {
+    /// <summary>
+    ///     Wrapper arround Default Settings.
+    /// </summary>
     public class ApplicationSettings : IApplicationSettings
     {
+        /// <summary>
+        /// </summary>
         public string Addresses
         {
             get
@@ -17,6 +22,8 @@
             }
         }
 
+        /// <summary>
+        /// </summary>
         public string LoggingPath
         {
             get
@@ -33,6 +40,8 @@
             }
         }
 
+        /// <summary>
+        /// </summary>
         public string InterNetworkType
         {
             get
@@ -48,6 +57,8 @@
             }
         }
 
+        /// <summary>
+        /// </summary>
         public int TimeSpanHours
         {
             get { return Properties.Settings.Default.TimeSpanHours; }
@@ -58,6 +69,8 @@
             }
         }
 
+        /// <summary>
+        /// </summary>
         public int TimeSpanMinutes
         {
             get { return Properties.Settings.Default.TimeSpanMinutes; }
@@ -68,6 +81,8 @@
             }
         }
 
+        /// <summary>
+        /// </summary>
         public int TimeSpanSeconds
         {
             get { return Properties.Settings.Default.TimeSpanSeconds; }

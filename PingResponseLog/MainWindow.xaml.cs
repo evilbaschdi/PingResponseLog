@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using EvilBaschdi.Core.Application;
+using EvilBaschdi.Core.Wpf;
 using MahApps.Metro.Controls;
 using PingResponseLog.Core;
 using PingResponseLog.Internal;
@@ -15,26 +17,40 @@ namespace PingResponseLog
     /// </summary>
     public partial class MainWindow
     {
+        /// <summary>
+        /// </summary>
         public MainWindow CurrentHiddenInstance { get; set; }
 
         private DispatcherTimer _dispatcherTimer;
-        private readonly IApplicationStyle _style;
+
+        private readonly IMetroStyle _style;
+
         private readonly IApplicationSettings _applicationSettings;
+
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly ISettings _coreSettings;
+
         private readonly IApplicationBasics _basics;
+
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly IPingHelper _pingHelper;
+
         private readonly IPingProcessor _pingProcessor;
         private int _overrideProtection;
         private int _timeSpanHours;
         private int _timeSpanMinutes;
         private int _timeSpanSeconds;
 
+        /// <summary>
+        /// </summary>
         public MainWindow()
         {
-            _style = new ApplicationStyle(this);
             _applicationSettings = new ApplicationSettings();
+            _coreSettings = new CoreSettings();
             _basics = new ApplicationBasics(_applicationSettings);
             InitializeComponent();
-            _style.Load();
+            _style = new MetroStyle(this, Accent, Dark, Light, _coreSettings);
+            _style.Load(true, false);
             _pingHelper = new PingHelper(_applicationSettings);
             _pingProcessor = new PingProcessor(_pingHelper, _applicationSettings);
             Load();
@@ -107,24 +123,36 @@ namespace PingResponseLog
 
         #endregion Flyout
 
-        #region Style
+        #region MetroStyle
 
         private void SaveStyleClick(object sender, RoutedEventArgs e)
         {
+            if(_overrideProtection == 0)
+            {
+                return;
+            }
             _style.SaveStyle();
         }
 
         private void Theme(object sender, RoutedEventArgs e)
         {
+            if(_overrideProtection == 0)
+            {
+                return;
+            }
             _style.SetTheme(sender, e);
         }
 
         private void AccentOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if(_overrideProtection == 0)
+            {
+                return;
+            }
             _style.SetAccent(sender, e);
         }
 
-        #endregion Style
+        #endregion MetroStyle
 
         #region Logging
 
