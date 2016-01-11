@@ -7,6 +7,18 @@
     <!--  RightWindowCommands  -->
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
+            <!-- NetworkBrowser -->
+            <Button Click="BrowseNetworkOnClick">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_network}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" Text="search" />
+                </StackPanel>
+            </Button>
             <!--  Settings  -->
             <Button Click="ToggleSettingsFlyoutClick">
                 <StackPanel Orientation="Horizontal">
@@ -26,7 +38,7 @@
 
         <!-- Addresses -->
         <TextBox x:Name="Addresses" Height="30" Margin="10,10,90,0" TextWrapping="Wrap" VerticalAlignment="Top"
-                 controls:TextBoxHelper.Watermark="fill in addresses (dns, IPv4, IPv6) seperated by a comma" />
+                 controls:TextBoxHelper.Watermark="fill in addresses (dns, IPv4, IPv6) seperated by a comma" LostFocus="AddressesOnLostFocus" />
         <Button x:Name="Ping" Margin="0,10,10,0" VerticalAlignment="Top" Click="PingOnClick"
                 HorizontalAlignment="Right" Width="75">
             <StackPanel Orientation="Horizontal">

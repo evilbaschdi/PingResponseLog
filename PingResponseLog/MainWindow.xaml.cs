@@ -193,9 +193,13 @@ namespace PingResponseLog
 
         private void PingOnClick(object sender, RoutedEventArgs e)
         {
-            _applicationSettings.Addresses = Addresses.Text;
             SetTimer();
             Result.Text += _pingProcessor.CallPing;
+        }
+
+        private void AddressesOnLostFocus(object sender, RoutedEventArgs e)
+        {
+            _applicationSettings.Addresses = Addresses.Text.TrimEnd(',');
         }
 
         private void PingTimerOnTick(object sender, EventArgs e)
@@ -211,6 +215,19 @@ namespace PingResponseLog
             }
             var radiobutton = (RadioButton) sender;
             _applicationSettings.InterNetworkType = radiobutton.Name;
+        }
+
+        private void BrowseNetworkOnClick(object sender, RoutedEventArgs e)
+        {
+            var networkBrowserDialog = new NetworkBrowserDialog();
+
+            networkBrowserDialog.Closing += NetworkBrowserDialogClosing;
+            networkBrowserDialog.Show();
+        }
+
+        private void NetworkBrowserDialogClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Addresses.Text = _applicationSettings.Addresses;
         }
 
         #endregion Events
