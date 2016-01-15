@@ -35,12 +35,10 @@
     </controls:MetroWindow.RightWindowCommands>
     <!-- Grid -->
     <Grid>
-
         <!-- Addresses -->
         <TextBox x:Name="Addresses" Height="30" Margin="10,10,90,0" TextWrapping="Wrap" VerticalAlignment="Top"
                  controls:TextBoxHelper.Watermark="fill in addresses (dns, IPv4, IPv6) seperated by a comma" LostFocus="AddressesOnLostFocus" />
-        <Button x:Name="Ping" Margin="0,10,10,0" VerticalAlignment="Top" Click="PingOnClick"
-                HorizontalAlignment="Right" Width="75">
+        <Button x:Name="Ping" Margin="0,10,10,0" VerticalAlignment="Top" Click="PingOnClick" HorizontalAlignment="Right" Width="75">
             <StackPanel Orientation="Horizontal">
                 <Rectangle Width="20" Height="20"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -48,7 +46,7 @@
                         <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_progress}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
-                <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Text="ping" />
+                <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Name="PingButtonTextBlock" Text="ping" />
             </StackPanel>
         </Button>
         <!-- Time -->
@@ -69,7 +67,6 @@
         <controls:NumericUpDown x:Name="TimeSpanSeconds" Height="30" Width="75" Margin="345,45,0,0"
                                 VerticalAlignment="Top" HorizontalAlignment="Left" Minimum="0" Maximum="9999"
                                 ValueChanged="TimeSpanSecondsOnValueChanged" />
-
         <!-- Result -->
         <TextBox x:Name="Result" Margin="10,80,10,10" HorizontalScrollBarVisibility="Auto"
                  VerticalScrollBarVisibility="Auto" IsReadOnly="True" />

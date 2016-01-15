@@ -40,11 +40,23 @@ namespace PingResponseLog.Internal
                 var text = string.Empty;
                 Parallel.ForEach(_pingHelper.AddressList, address =>
                 {
-                    var dns = _pingHelper.GetDnsName(address);
-                    var info = $"{DateTime.Now}, {address} ({dns}),";
-                    var reply = new Ping().Send(address);
+                    PingReply reply = null;
+                    string status;
+                    try
+                    {
+                        reply = new Ping().Send(address);
+                        status = _pingHelper.GetStatus(reply);
+                    }
+                    catch(PingException e)
+                    {
+                        status = e.Message;
+                    }
 
-                    var result = $"{info} {_pingHelper.GetStatus(reply)}{Environment.NewLine}";
+                    var dns = reply != null && reply.Status == IPStatus.Success ? _pingHelper.GetDnsName(address) : "error resolving ip or dns name";
+
+                    var info = $"{DateTime.Now}, {address} ({dns}),";
+
+                    var result = $"{info} {status}{Environment.NewLine}";
 
                     text += result;
                 });

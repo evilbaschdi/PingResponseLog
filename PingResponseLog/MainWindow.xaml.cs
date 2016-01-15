@@ -22,6 +22,7 @@ namespace PingResponseLog
         public MainWindow CurrentHiddenInstance { get; set; }
 
         private DispatcherTimer _dispatcherTimer;
+        private bool _dispatcherTimerRunning;
 
         private readonly IMetroStyle _style;
 
@@ -90,6 +91,7 @@ namespace PingResponseLog
             _timeSpanMinutes = _applicationSettings.TimeSpanMinutes;
             _timeSpanSeconds = _applicationSettings.TimeSpanSeconds;
             _dispatcherTimer.Interval = new TimeSpan(_timeSpanHours, _timeSpanMinutes, _timeSpanSeconds);
+            _dispatcherTimerRunning = true;
             _dispatcherTimer.Start();
         }
 
@@ -193,8 +195,18 @@ namespace PingResponseLog
 
         private void PingOnClick(object sender, RoutedEventArgs e)
         {
-            SetTimer();
-            Result.Text += _pingProcessor.CallPing;
+            if(_dispatcherTimer != null && _dispatcherTimerRunning)
+            {
+                _dispatcherTimer.Stop();
+                _dispatcherTimerRunning = false;
+                PingButtonTextBlock.Text = "ping";
+            }
+            else
+            {
+                SetTimer();
+                Result.Text += _pingProcessor.CallPing;
+                PingButtonTextBlock.Text = "stop";
+            }
         }
 
         private void AddressesOnLostFocus(object sender, RoutedEventArgs e)
