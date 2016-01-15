@@ -11,16 +11,21 @@ namespace PingResponseLog.Internal
     public class PingProcessor : IPingProcessor
     {
         private readonly IPingHelper _pingHelper;
+        private readonly ILoggingHelper _loggingHelper;
         private readonly IApplicationSettings _applicationSettings;
 
         /// <summary>
         ///     Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.
         /// </summary>
-        public PingProcessor(IPingHelper pingHelper, IApplicationSettings applicationSettings)
+        public PingProcessor(IPingHelper pingHelper, ILoggingHelper loggingHelper, IApplicationSettings applicationSettings)
         {
             if(pingHelper == null)
             {
                 throw new ArgumentNullException(nameof(pingHelper));
+            }
+            if(loggingHelper == null)
+            {
+                throw new ArgumentNullException(nameof(loggingHelper));
             }
             if(applicationSettings == null)
             {
@@ -28,6 +33,7 @@ namespace PingResponseLog.Internal
             }
 
             _pingHelper = pingHelper;
+            _loggingHelper = loggingHelper;
             _applicationSettings = applicationSettings;
         }
 
@@ -47,9 +53,9 @@ namespace PingResponseLog.Internal
                         reply = new Ping().Send(address);
                         status = _pingHelper.GetStatus(reply);
                     }
-                    catch(PingException e)
+                    catch(PingException)
                     {
-                        status = e.Message;
+                        status = "Destination Host or Network Unreachable";
                     }
 
                     var dns = reply != null && reply.Status == IPStatus.Success ? _pingHelper.GetDnsName(address) : "error resolving ip or dns name";
@@ -60,7 +66,7 @@ namespace PingResponseLog.Internal
 
                     text += result;
                 });
-                File.AppendAllText($@"{_applicationSettings.LoggingPath}\{_pingHelper.PingResponseLogFileName}", text);
+                File.AppendAllText($@"{_applicationSettings.LoggingPath}\{_loggingHelper.PingResponseLogFileName}", text);
 
                 return $"{text}-----{Environment.NewLine}";
             }

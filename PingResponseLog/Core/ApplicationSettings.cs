@@ -1,4 +1,7 @@
-﻿namespace PingResponseLog.Core
+﻿using System;
+using System.IO;
+
+namespace PingResponseLog.Core
 {
     /// <summary>
     ///     Wrapper arround Default Settings.
@@ -30,12 +33,42 @@
             {
                 return
                     string.IsNullOrWhiteSpace(Properties.Settings.Default.LoggingPath)
-                        ? ""
+                        ? Path.GetTempPath()
                         : Properties.Settings.Default.LoggingPath;
             }
             set
             {
                 Properties.Settings.Default.LoggingPath = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public DateTime CurrentLoggingDateTime
+        {
+            get { return Properties.Settings.Default.CurrentLoggingDateTime; }
+            set
+            {
+                Properties.Settings.Default.CurrentLoggingDateTime = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public string LoggingFileInterval
+        {
+            get
+            {
+                return
+                    string.IsNullOrWhiteSpace(Properties.Settings.Default.LoggingFileInterval)
+                        ? Path.GetTempPath()
+                        : Properties.Settings.Default.LoggingFileInterval;
+            }
+            set
+            {
+                Properties.Settings.Default.LoggingFileInterval = value;
                 Properties.Settings.Default.Save();
             }
         }

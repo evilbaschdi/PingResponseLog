@@ -24,19 +24,15 @@ namespace PingResponseLog
         private DispatcherTimer _dispatcherTimer;
         private bool _dispatcherTimerRunning;
 
+        // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly IMetroStyle _style;
-
         private readonly IApplicationSettings _applicationSettings;
-
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ISettings _coreSettings;
-
         private readonly IApplicationBasics _basics;
-
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly IPingHelper _pingHelper;
-
+        private readonly ILoggingHelper _loggingHelper;
         private readonly IPingProcessor _pingProcessor;
+        // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
         private int _overrideProtection;
         private int _timeSpanHours;
         private int _timeSpanMinutes;
@@ -49,11 +45,12 @@ namespace PingResponseLog
             _applicationSettings = new ApplicationSettings();
             _coreSettings = new CoreSettings();
             _basics = new ApplicationBasics(_applicationSettings);
+            _loggingHelper = new LoggingHelper(_applicationSettings);
             InitializeComponent();
             _style = new MetroStyle(this, Accent, Dark, Light, _coreSettings);
             _style.Load(true, false);
             _pingHelper = new PingHelper(_applicationSettings);
-            _pingProcessor = new PingProcessor(_pingHelper, _applicationSettings);
+            _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings);
             Load();
         }
 
@@ -64,6 +61,7 @@ namespace PingResponseLog
             TimeSpanHours.Value = _applicationSettings.TimeSpanHours;
             TimeSpanMinutes.Value = _applicationSettings.TimeSpanMinutes;
             TimeSpanSeconds.Value = _applicationSettings.TimeSpanSeconds;
+            LoggingFileInterval.Text = _applicationSettings.LoggingFileInterval;
 
             switch(_applicationSettings.InterNetworkType)
             {
@@ -156,7 +154,7 @@ namespace PingResponseLog
 
         #endregion MetroStyle
 
-        #region Logging
+        #region LoggingHelper
 
         private void BrowseLoggingPathClick(object sender, RoutedEventArgs e)
         {
@@ -174,7 +172,7 @@ namespace PingResponseLog
             Load();
         }
 
-        #endregion Logging
+        #endregion LoggingHelper
 
         #region Events
 
@@ -240,6 +238,11 @@ namespace PingResponseLog
         private void NetworkBrowserDialogClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Addresses.Text = _applicationSettings.Addresses;
+        }
+
+        private void LoggingFileIntervalOnDropDownClosed(object sender, EventArgs e)
+        {
+            _applicationSettings.LoggingFileInterval = LoggingFileInterval.Text;
         }
 
         #endregion Events

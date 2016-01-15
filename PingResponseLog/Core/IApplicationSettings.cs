@@ -1,4 +1,6 @@
-﻿namespace PingResponseLog.Core
+﻿using System;
+
+namespace PingResponseLog.Core
 {
     /// <summary>
     ///     Wrapper arround Default Settings.
@@ -12,6 +14,14 @@
         /// <summary>
         /// </summary>
         string LoggingPath { get; set; }
+
+        /// <summary>
+        /// </summary>
+        DateTime CurrentLoggingDateTime { get; set; }
+
+        /// <summary>
+        /// </summary>
+        string LoggingFileInterval { get; set; }
 
         /// <summary>
         /// </summary>

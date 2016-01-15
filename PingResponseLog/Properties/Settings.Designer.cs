@@ -118,5 +118,28 @@ namespace PingResponseLog.Properties {
                 this["InterNetworkType"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LoggingFileInterval {
+            get {
+                return ((string)(this["LoggingFileInterval"]));
+            }
+            set {
+                this["LoggingFileInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime CurrentLoggingDateTime {
+            get {
+                return ((global::System.DateTime)(this["CurrentLoggingDateTime"]));
+            }
+            set {
+                this["CurrentLoggingDateTime"] = value;
+            }
+        }
     }
 }

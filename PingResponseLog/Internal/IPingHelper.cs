@@ -18,9 +18,5 @@ namespace PingResponseLog.Internal
         /// <summary>
         /// </summary>
         string GetStatus(PingReply reply);
-
-        /// <summary>
-        /// </summary>
-        string PingResponseLogFileName { get; }
     }
 }

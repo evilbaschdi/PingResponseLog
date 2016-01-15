@@ -12,7 +12,6 @@ namespace PingResponseLog.Internal
     public class PingHelper : IPingHelper
     {
         private readonly IApplicationSettings _applicationSettings;
-        private string _fileName;
 
         /// <summary>
         ///     Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.
@@ -174,20 +173,6 @@ namespace PingResponseLog.Internal
                     throw new ArgumentOutOfRangeException();
             }
             return status;
-        }
-
-        /// <summary>
-        /// </summary>
-        public string PingResponseLogFileName
-        {
-            get
-            {
-                if(string.IsNullOrWhiteSpace(_fileName))
-                {
-                    _fileName = $"PingResponseLog_{DateTime.Now.ToString("yyyy-MM-dd_HHmm")}.txt";
-                }
-                return _fileName;
-            }
         }
     }
 }

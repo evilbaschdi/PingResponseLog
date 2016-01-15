@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using EvilBaschdi.Core.Browsers;
 using MahApps.Metro.Controls;
 using PingResponseLog.Core;
@@ -16,6 +18,8 @@ namespace PingResponseLog
         private INetworkBrowser _networkBrowser;
         private readonly IApplicationSettings _applicationSettings;
         private readonly IPingHelper _pingHelper;
+        private bool _windowShown;
+        private readonly BackgroundWorker _bw;
 
         /// <summary>
         /// </summary>
@@ -25,21 +29,47 @@ namespace PingResponseLog
         /// </summary>
         public NetworkBrowserDialog()
         {
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             _applicationSettings = new ApplicationSettings();
             _pingHelper = new PingHelper(_applicationSettings);
             InitializeComponent();
-            Load();
+            _bw = new BackgroundWorker();
         }
 
-        private void Load()
+
+        /// <summary>
+        ///     Executing code when window is shown.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+
+            if(_windowShown)
+            {
+                return;
+            }
+
+            _windowShown = true;
+
+            _bw.DoWork += (o, args) => LoadAddressList();
+            _bw.WorkerReportsProgress = true;
+            _bw.RunWorkerCompleted += SetAddressListBox;
+            _bw.RunWorkerAsync();
+        }
+
+
+        private void SetAddressListBox(object sender, RunWorkerCompletedEventArgs e)
+        {
+            AddressListBox.ItemsSource = AddressList;
+            AddressListBox.Visibility = Visibility.Visible;
+            Loading.Visibility = Visibility.Hidden;
+        }
+
+        private void LoadAddressList()
         {
             _networkBrowser = new NetworkBrowser();
-            AddressList = new ObservableCollection<Address>();
-            AddressListBox.IsEnabled = false;
             AddressList = GetAddressList();
-            DataContext = this;
-            AddressListBox.ItemsSource = AddressList;
-            AddressListBox.IsEnabled = true;
         }
 
         private ObservableCollection<Address> GetAddressList()
@@ -64,7 +94,10 @@ namespace PingResponseLog
         /// <param name="e">A <see cref="T:System.ComponentModel.CancelEventArgs" /> that contains the event data.</param>
         protected override void OnClosing(CancelEventArgs e)
         {
-            UpdateAddresses();
+            if(AddressListBox.IsVisible)
+            {
+                UpdateAddresses();
+            }
             base.OnClosing(e);
         }
 
@@ -79,10 +112,7 @@ namespace PingResponseLog
                 addressList.Add(checkedItem.Name);
             }
 
-            foreach(var s in addressList)
-            {
-                addresses = addresses + $"{s}, ";
-            }
+            addresses = addressList.Aggregate(addresses, (current, s) => current + $"{s}, ");
             _applicationSettings.Addresses = addresses.TrimStart(',').Trim().TrimEnd(',');
         }
     }
