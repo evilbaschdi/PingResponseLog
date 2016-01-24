@@ -81,7 +81,7 @@ namespace PingResponseLog
             {
                 collection.Add(new Address
                 {
-                    Name = computer
+                    Name = computer.ToLower()
                 });
             }
 
@@ -113,7 +113,7 @@ namespace PingResponseLog
             }
 
             addresses = addressList.Aggregate(addresses, (current, s) => current + $"{s}, ");
-            _applicationSettings.Addresses = addresses.TrimStart(',').Trim().TrimEnd(',');
+            _applicationSettings.Addresses = addresses.TrimStart(',').Trim().TrimEnd(',').ToLower();
         }
     }
 }

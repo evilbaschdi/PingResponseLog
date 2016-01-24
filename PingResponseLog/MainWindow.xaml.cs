@@ -209,7 +209,7 @@ namespace PingResponseLog
 
         private void AddressesOnLostFocus(object sender, RoutedEventArgs e)
         {
-            _applicationSettings.Addresses = Addresses.Text.TrimEnd(',');
+            _applicationSettings.Addresses = Addresses.Text.TrimEnd(',').ToLower();
         }
 
         private void PingTimerOnTick(object sender, EventArgs e)

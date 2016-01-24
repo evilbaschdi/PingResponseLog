@@ -8,7 +8,11 @@
         <ListBox Name="AddressListBox" Margin="10" Visibility="Hidden">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <CheckBox IsChecked="{Binding AddToAddresses}" Content="{Binding Name}" />
+                    <CheckBox IsChecked="{Binding AddToAddresses}"  >
+                        <CheckBox.Content>
+                            <TextBlock Text="{Binding Name}"/>
+                        </CheckBox.Content>
+                    </CheckBox>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
