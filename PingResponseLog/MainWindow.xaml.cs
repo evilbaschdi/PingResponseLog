@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using EvilBaschdi.Core.Application;
+using EvilBaschdi.Core.Browsers;
 using EvilBaschdi.Core.Wpf;
 using MahApps.Metro.Controls;
 using PingResponseLog.Core;
@@ -26,14 +27,16 @@ namespace PingResponseLog
 
         // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly IMetroStyle _style;
+
         private readonly IApplicationSettings _applicationSettings;
         private readonly ISettings _coreSettings;
-        private readonly IApplicationBasics _basics;
         private readonly IPingHelper _pingHelper;
         private readonly ILoggingHelper _loggingHelper;
         private readonly IPingProcessor _pingProcessor;
+
         // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
         private int _overrideProtection;
+
         private int _timeSpanHours;
         private int _timeSpanMinutes;
         private int _timeSpanSeconds;
@@ -44,7 +47,6 @@ namespace PingResponseLog
         {
             _applicationSettings = new ApplicationSettings();
             _coreSettings = new CoreSettings();
-            _basics = new ApplicationBasics(_applicationSettings);
             _loggingHelper = new LoggingHelper(_applicationSettings);
             InitializeComponent();
             _style = new MetroStyle(this, Accent, Dark, Light, _coreSettings);
@@ -158,8 +160,12 @@ namespace PingResponseLog
 
         private void BrowseLoggingPathClick(object sender, RoutedEventArgs e)
         {
-            _basics.BrowseLoggingFolder();
-            LoggingPath.Text = _applicationSettings.LoggingPath;
+            var browser = new ExplorerFolderBrower
+            {
+                SelectedPath = _applicationSettings.LoggingPath
+            };
+            browser.ShowDialog();
+            _applicationSettings.LoggingPath = browser.SelectedPath;
             Load();
         }
 
@@ -168,8 +174,8 @@ namespace PingResponseLog
             if(Directory.Exists(LoggingPath.Text))
             {
                 _applicationSettings.LoggingPath = LoggingPath.Text;
+                Load();
             }
-            Load();
         }
 
         #endregion LoggingHelper
