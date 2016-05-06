@@ -1,4 +1,5 @@
-﻿using System;
+﻿// ReSharper disable once RedundantUsingDirective
+using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -49,7 +50,7 @@ namespace PingResponseLog
             _coreSettings = new CoreSettings();
             _loggingHelper = new LoggingHelper(_applicationSettings);
             InitializeComponent();
-            _style = new MetroStyle(this, Accent, Dark, Light, _coreSettings);
+            _style = new MetroStyleByToggleSwitch(this, Accent, ThemeSwitch, _coreSettings);
             _style.Load(true, false);
             _pingHelper = new PingHelper(_applicationSettings);
             _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings);
@@ -65,16 +66,14 @@ namespace PingResponseLog
             TimeSpanSeconds.Value = _applicationSettings.TimeSpanSeconds;
             LoggingFileInterval.Text = _applicationSettings.LoggingFileInterval;
 
-            switch(_applicationSettings.InterNetworkType)
+            switch (_applicationSettings.InterNetworkType)
             {
                 case "V4":
-                    V4.IsChecked = true;
-                    V6.IsChecked = false;
+                    InterNetworkSwitch.IsChecked = false;
                     break;
 
                 case "V6":
-                    V4.IsChecked = false;
-                    V6.IsChecked = true;
+                    InterNetworkSwitch.IsChecked = true;
                     break;
             }
 
@@ -107,15 +106,12 @@ namespace PingResponseLog
         private void ToggleFlyout(int index, bool stayOpen = false)
         {
             var activeFlyout = (Flyout) Flyouts.Items[index];
-            if(activeFlyout == null)
+            if (activeFlyout == null)
             {
                 return;
             }
 
-            foreach(
-                var nonactiveFlyout in
-                    Flyouts.Items.Cast<Flyout>()
-                        .Where(nonactiveFlyout => nonactiveFlyout.IsOpen && nonactiveFlyout.Name != activeFlyout.Name))
+            foreach (var nonactiveFlyout in Flyouts.Items.Cast<Flyout>().Where(nonactiveFlyout => nonactiveFlyout.IsOpen && nonactiveFlyout.Name != activeFlyout.Name))
             {
                 nonactiveFlyout.IsOpen = false;
             }
@@ -129,25 +125,25 @@ namespace PingResponseLog
 
         private void SaveStyleClick(object sender, RoutedEventArgs e)
         {
-            if(_overrideProtection == 0)
+            if (_overrideProtection == 0)
             {
                 return;
             }
             _style.SaveStyle();
         }
 
-        private void Theme(object sender, RoutedEventArgs e)
+        private void Theme(object sender, EventArgs e)
         {
-            if(_overrideProtection == 0)
+            if (_overrideProtection == 0)
             {
                 return;
             }
-            _style.SetTheme(sender, e);
+            _style.SetTheme(sender);
         }
 
         private void AccentOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(_overrideProtection == 0)
+            if (_overrideProtection == 0)
             {
                 return;
             }
@@ -161,9 +157,9 @@ namespace PingResponseLog
         private void BrowseLoggingPathClick(object sender, RoutedEventArgs e)
         {
             var browser = new ExplorerFolderBrower
-            {
-                SelectedPath = _applicationSettings.LoggingPath
-            };
+                          {
+                              SelectedPath = _applicationSettings.LoggingPath
+                          };
             browser.ShowDialog();
             _applicationSettings.LoggingPath = browser.SelectedPath;
             Load();
@@ -171,7 +167,7 @@ namespace PingResponseLog
 
         private void LoggingPathOnLostFocus(object sender, RoutedEventArgs e)
         {
-            if(Directory.Exists(LoggingPath.Text))
+            if (Directory.Exists(LoggingPath.Text))
             {
                 _applicationSettings.LoggingPath = LoggingPath.Text;
                 Load();
@@ -199,7 +195,7 @@ namespace PingResponseLog
 
         private void PingOnClick(object sender, RoutedEventArgs e)
         {
-            if(_dispatcherTimer != null && _dispatcherTimerRunning)
+            if (_dispatcherTimer != null && _dispatcherTimerRunning)
             {
                 _dispatcherTimer.Stop();
                 _dispatcherTimerRunning = false;
@@ -223,14 +219,14 @@ namespace PingResponseLog
             Result.Text += _pingProcessor.CallPing;
         }
 
-        private void InterNetwork(object sender, RoutedEventArgs e)
+        private void InterNetwork(object sender, EventArgs e)
         {
-            if(_overrideProtection == 0)
+            if (_overrideProtection == 0)
             {
                 return;
             }
-            var radiobutton = (RadioButton) sender;
-            _applicationSettings.InterNetworkType = radiobutton.Name;
+            var toggleSwitch = (ToggleSwitch) sender;
+            _applicationSettings.InterNetworkType = toggleSwitch.IsChecked.Value ? "V6" : "V4";
         }
 
         private void BrowseNetworkOnClick(object sender, RoutedEventArgs e)
