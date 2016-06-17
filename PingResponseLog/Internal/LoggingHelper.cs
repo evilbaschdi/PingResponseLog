@@ -15,7 +15,7 @@ namespace PingResponseLog.Internal
         /// </summary>
         public LoggingHelper(IApplicationSettings applicationSettings)
         {
-            if(applicationSettings == null)
+            if (applicationSettings == null)
             {
                 throw new ArgumentNullException(nameof(applicationSettings));
             }
@@ -28,7 +28,7 @@ namespace PingResponseLog.Internal
         {
             get
             {
-                if(!string.IsNullOrWhiteSpace(_fileName) && IsCurrentDateTimeValid())
+                if (!string.IsNullOrWhiteSpace(_fileName) && IsCurrentDateTimeValid())
                 {
                     return _fileName;
                 }
@@ -40,7 +40,7 @@ namespace PingResponseLog.Internal
 
         private bool IsCurrentDateTimeValid()
         {
-            switch(_applicationSettings.LoggingFileInterval)
+            switch (_applicationSettings.LoggingFileInterval)
             {
                 case "per minute":
                     return _applicationSettings.CurrentLoggingDateTime.Minute == DateTime.Now.Minute;
@@ -54,7 +54,7 @@ namespace PingResponseLog.Internal
                     return _applicationSettings.CurrentLoggingDateTime.Year == DateTime.Now.Year;
                 //case "per application instance":
                 default:
-                    return false;
+                    return true;
             }
         }
     }
