@@ -1,4 +1,5 @@
 ﻿// ReSharper disable once RedundantUsingDirective
+
 using System;
 using System.IO;
 using System.Linq;
@@ -35,9 +36,7 @@ namespace PingResponseLog
         private readonly ILoggingHelper _loggingHelper;
         private readonly IPingProcessor _pingProcessor;
 
-        // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
         private int _overrideProtection;
-
         private int _timeSpanHours;
         private int _timeSpanMinutes;
         private int _timeSpanSeconds;
@@ -204,7 +203,8 @@ namespace PingResponseLog
             else
             {
                 SetTimer();
-                Result.Text += _pingProcessor.CallPing;
+                Result.AppendText(_pingProcessor.CallPing);
+                Result.ScrollToEnd();
                 PingButtonTextBlock.Text = "stop";
             }
         }
@@ -216,7 +216,8 @@ namespace PingResponseLog
 
         private void PingTimerOnTick(object sender, EventArgs e)
         {
-            Result.Text += _pingProcessor.CallPing;
+            Result.AppendText(_pingProcessor.CallPing);
+            Result.ScrollToEnd();
         }
 
         private void InterNetwork(object sender, EventArgs e)
@@ -226,7 +227,7 @@ namespace PingResponseLog
                 return;
             }
             var toggleSwitch = (ToggleSwitch) sender;
-            _applicationSettings.InterNetworkType = toggleSwitch.IsChecked.Value ? "V6" : "V4";
+            _applicationSettings.InterNetworkType = toggleSwitch.IsChecked.HasValue && toggleSwitch.IsChecked.Value ? "V6" : "V4";
         }
 
         private void BrowseNetworkOnClick(object sender, RoutedEventArgs e)
