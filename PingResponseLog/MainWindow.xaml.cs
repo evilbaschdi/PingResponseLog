@@ -49,8 +49,8 @@ namespace PingResponseLog
             _coreSettings = new CoreSettings();
             _loggingHelper = new LoggingHelper(_applicationSettings);
             InitializeComponent();
-            _style = new MetroStyleByToggleSwitch(this, Accent, ThemeSwitch, _coreSettings);
-            _style.Load(true, false);
+            _style = new MetroStyle(this, Accent, ThemeSwitch, _coreSettings);
+            _style.Load(true);
             _pingHelper = new PingHelper(_applicationSettings);
             _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings);
             Load();
