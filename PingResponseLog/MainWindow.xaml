@@ -70,8 +70,17 @@
                                 VerticalAlignment="Top" HorizontalAlignment="Left" Minimum="0" Maximum="9999"
                                 ValueChanged="TimeSpanSecondsOnValueChanged" />
         <!-- Result -->
-        <TextBox x:Name="Result" Margin="10,80,10,10" HorizontalScrollBarVisibility="Auto"
-                 VerticalScrollBarVisibility="Auto" IsReadOnly="True" />
+        <DataGrid x:Name="ResultGrid" Margin="10,80,10,10" AutoGenerateColumns="False" CanUserAddRows="False"
+                  CanUserDeleteRows="False" ColumnWidth="*" SelectionUnit="FullRow"
+                  GridLinesVisibility="Horizontal" IsReadOnly="True">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding TimeStamp, StringFormat=\{0:dd.MM.yyyy HH:mm:ss\}}" Header="Time Stamp" />
+                <DataGridTextColumn Binding="{Binding Dns}" Header="DNS" />
+                <DataGridTextColumn Binding="{Binding Ip}" Header="IP" />
+                <DataGridTextColumn Binding="{Binding Response}" Header="Response" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
     <!--  Flyouts  -->
     <controls:MetroWindow.Flyouts>

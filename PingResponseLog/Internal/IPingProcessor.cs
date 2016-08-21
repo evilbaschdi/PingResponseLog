@@ -1,11 +1,11 @@
+using EvilBaschdi.Core.DotNetExtensions;
+using PingResponseLog.Models;
+
 namespace PingResponseLog.Internal
 {
     /// <summary>
     /// </summary>
-    public interface IPingProcessor
+    public interface IPingProcessor : IValue<PingLog>
     {
-        /// <summary>
-        /// </summary>
-        string CallPing { get; }
     }
 }

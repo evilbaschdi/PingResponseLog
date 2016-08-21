@@ -13,10 +13,10 @@ namespace PingResponseLog.Internal
 
         /// <summary>
         /// </summary>
-        string GetDnsName(string input);
+        KeyValuePair<string, string> GetDnsName(string input);
 
         /// <summary>
         /// </summary>
-        string GetStatus(PingReply reply);
+        string GetResponse(PingReply reply);
     }
 }

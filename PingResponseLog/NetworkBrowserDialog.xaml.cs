@@ -7,6 +7,7 @@ using EvilBaschdi.Core.Browsers;
 using MahApps.Metro.Controls;
 using PingResponseLog.Core;
 using PingResponseLog.Internal;
+using PingResponseLog.Models;
 
 namespace PingResponseLog
 {
@@ -45,7 +46,7 @@ namespace PingResponseLog
         {
             base.OnContentRendered(e);
 
-            if(_windowShown)
+            if (_windowShown)
             {
                 return;
             }
@@ -77,12 +78,12 @@ namespace PingResponseLog
             var networkComputers = _networkBrowser.GetNetworkComputers;
             var collection = new ObservableCollection<Address>();
 
-            foreach(string computer in networkComputers)
+            foreach (string computer in networkComputers)
             {
                 collection.Add(new Address
-                {
-                    Name = computer.ToLower()
-                });
+                               {
+                                   Name = computer.ToLower()
+                               });
             }
 
             return collection;
@@ -94,7 +95,7 @@ namespace PingResponseLog
         /// <param name="e">A <see cref="T:System.ComponentModel.CancelEventArgs" /> that contains the event data.</param>
         protected override void OnClosing(CancelEventArgs e)
         {
-            if(AddressListBox.IsVisible)
+            if (AddressListBox.IsVisible)
             {
                 UpdateAddresses();
             }
@@ -107,7 +108,7 @@ namespace PingResponseLog
             var addressList = _pingHelper.AddressList;
             var addresses = string.Empty;
 
-            foreach(var checkedItem in checkedItems.Where(checkedItem => !addressList.Contains(checkedItem.Name)))
+            foreach (var checkedItem in checkedItems.Where(checkedItem => !addressList.Contains(checkedItem.Name)))
             {
                 addressList.Add(checkedItem.Name);
             }

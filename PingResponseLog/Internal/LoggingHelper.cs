@@ -13,6 +13,7 @@ namespace PingResponseLog.Internal
         /// <summary>
         ///     Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.
         /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="applicationSettings" /> is <see langword="null" />.</exception>
         public LoggingHelper(IApplicationSettings applicationSettings)
         {
             if (applicationSettings == null)
@@ -33,7 +34,7 @@ namespace PingResponseLog.Internal
                     return _fileName;
                 }
                 _applicationSettings.CurrentLoggingDateTime = DateTime.Now;
-                _fileName = $"PingResponseLog_{_applicationSettings.CurrentLoggingDateTime.ToString("yyyy-MM-dd_HHmm")}.txt";
+                _fileName = $"PingResponseLog_{_applicationSettings.CurrentLoggingDateTime:yyyy-MM-dd_HHmm}.csv";
                 return _fileName;
             }
         }

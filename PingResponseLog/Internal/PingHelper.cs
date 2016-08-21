@@ -16,9 +16,10 @@ namespace PingResponseLog.Internal
         /// <summary>
         ///     Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.
         /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="applicationSettings" /> is <see langword="null" />.</exception>
         public PingHelper(IApplicationSettings applicationSettings)
         {
-            if(applicationSettings == null)
+            if (applicationSettings == null)
             {
                 throw new ArgumentNullException(nameof(applicationSettings));
             }
@@ -33,7 +34,7 @@ namespace PingResponseLog.Internal
             {
                 var addressList = new List<string>();
                 var addressString = _applicationSettings.Addresses;
-                if(addressString.Contains(","))
+                if (addressString.Contains(","))
                 {
                     addressList.AddRange(addressString.Split(',').Select(address => address.Trim()));
                 }
@@ -47,35 +48,37 @@ namespace PingResponseLog.Internal
 
         /// <summary>
         /// </summary>
-        public string GetDnsName(string input)
+        public KeyValuePair<string, string> GetDnsName(string input)
         {
-            IPAddress address;
             var ipHostEntry = Dns.GetHostEntry(input);
-            if(IPAddress.TryParse(input, out address))
-            {
-                return ipHostEntry.HostName;
-            }
+            var hostName = ipHostEntry.HostName;
+            var ip = string.Empty;
 
-            foreach(var ip in ipHostEntry.AddressList)
+            foreach (var ipAddress in ipHostEntry.AddressList)
             {
-                if(_applicationSettings.InterNetworkType == "V6" && ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                if (_applicationSettings.InterNetworkType == "V6" && ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
                 {
-                    return ip.ToString();
+                    ip = ipAddress.ToString();
+                    break;
                 }
-                if(ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 {
-                    return ip.ToString();
+                    ip = ipAddress.ToString();
+                    break;
                 }
             }
-            return "error resolving ip or dns name";
+            return string.IsNullOrWhiteSpace(ip) || string.IsNullOrWhiteSpace(hostName)
+                ? new KeyValuePair<string, string>(input, "Error resolving IP or DNS name")
+                : new KeyValuePair<string, string>(ip, hostName);
         }
 
         /// <summary>
         /// </summary>
-        public string GetStatus(PingReply reply)
+        /// <exception cref="ArgumentOutOfRangeException">default.</exception>
+        public string GetResponse(PingReply reply)
         {
             string status;
-            switch(reply.Status)
+            switch (reply.Status)
             {
                 case IPStatus.Success:
                     status = $"{reply.RoundtripTime} ms";

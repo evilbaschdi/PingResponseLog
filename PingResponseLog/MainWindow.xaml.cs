@@ -1,6 +1,7 @@
 ﻿// ReSharper disable once RedundantUsingDirective
 
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -8,10 +9,12 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using EvilBaschdi.Core.Application;
 using EvilBaschdi.Core.Browsers;
+using EvilBaschdi.Core.Logging;
 using EvilBaschdi.Core.Wpf;
 using MahApps.Metro.Controls;
 using PingResponseLog.Core;
 using PingResponseLog.Internal;
+using PingResponseLog.Models;
 
 namespace PingResponseLog
 {
@@ -35,6 +38,7 @@ namespace PingResponseLog
         private readonly IPingHelper _pingHelper;
         private readonly ILoggingHelper _loggingHelper;
         private readonly IPingProcessor _pingProcessor;
+        private ObservableCollection<PingLogEntry> _pingLogEntries;
 
         private int _overrideProtection;
         private int _timeSpanHours;
@@ -52,7 +56,9 @@ namespace PingResponseLog
             _style = new MetroStyle(this, Accent, ThemeSwitch, _coreSettings);
             _style.Load(true);
             _pingHelper = new PingHelper(_applicationSettings);
-            _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings);
+            IAppendAllTextWithHeadline appendAllTextWithHeadline = new AppendAllTextWithHeadline();
+            _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings, appendAllTextWithHeadline);
+            _pingLogEntries = new ObservableCollection<PingLogEntry>();
             Load();
         }
 
@@ -155,7 +161,7 @@ namespace PingResponseLog
 
         private void BrowseLoggingPathClick(object sender, RoutedEventArgs e)
         {
-            var browser = new ExplorerFolderBrower
+            var browser = new ExplorerFolderBrowser
                           {
                               SelectedPath = _applicationSettings.LoggingPath
                           };
@@ -203,8 +209,9 @@ namespace PingResponseLog
             else
             {
                 SetTimer();
-                Result.AppendText(_pingProcessor.CallPing);
-                Result.ScrollToEnd();
+                var pingProcessorValue = _pingProcessor.Value;
+                _pingLogEntries = pingProcessorValue.PingLogEntries;
+                ResultGrid.ItemsSource = _pingLogEntries;
                 PingButtonTextBlock.Text = "stop";
             }
         }
@@ -216,8 +223,12 @@ namespace PingResponseLog
 
         private void PingTimerOnTick(object sender, EventArgs e)
         {
-            Result.AppendText(_pingProcessor.CallPing);
-            Result.ScrollToEnd();
+            var pingProcessorValue = _pingProcessor.Value;
+            foreach (var pingLogEntry in pingProcessorValue.PingLogEntries)
+            {
+                _pingLogEntries.Add(pingLogEntry);
+            }
+            ResultGrid.ItemsSource = _pingLogEntries;
         }
 
         private void InterNetwork(object sender, EventArgs e)
