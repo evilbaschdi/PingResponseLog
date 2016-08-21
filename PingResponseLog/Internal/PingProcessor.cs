@@ -88,7 +88,12 @@ namespace PingResponseLog.Internal
                                                               pingLogEntries.Add(pingLogEntry);
                                                           });
 
-                Parallel.ForEach(pingLogEntries, entry => { stringBuilder.Append($"{entry.TimeStamp};{entry.Dns};{entry.Ip};{entry.Response};{Environment.NewLine}"); });
+                //Parallel.ForEach(pingLogEntries, entry => { stringBuilder.Append($"{entry.TimeStamp};{entry.Dns};{entry.Ip};{entry.Response};{Environment.NewLine}"); });
+
+                foreach (var entry in pingLogEntries)
+                {
+                    stringBuilder.Append($"{entry.TimeStamp};{entry.Dns};{entry.Ip};{entry.Response};{Environment.NewLine}");
+                }
 
                 _appendAllTextWithHeadline.For($@"{_applicationSettings.LoggingPath}\{_loggingHelper.PingResponseLogFileName}", stringBuilder, "TimeStamp;DNS;IP;Response;");
 
