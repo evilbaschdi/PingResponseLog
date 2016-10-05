@@ -34,13 +34,16 @@ namespace PingResponseLog.Internal
             {
                 var addressList = new List<string>();
                 var addressString = _applicationSettings.Addresses;
-                if (addressString.Contains(","))
+                if (!string.IsNullOrWhiteSpace(addressString))
                 {
-                    addressList.AddRange(addressString.Split(',').Select(address => address.Trim()));
-                }
-                else
-                {
-                    addressList.Add(addressString.Trim());
+                    if (addressString.Contains(","))
+                    {
+                        addressList.AddRange(addressString.Split(',').Select(address => address.Trim()));
+                    }
+                    else
+                    {
+                        addressList.Add(addressString.Trim());
+                    }
                 }
                 return addressList;
             }
