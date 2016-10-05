@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -59,6 +61,8 @@ namespace PingResponseLog
             IAppendAllTextWithHeadline appendAllTextWithHeadline = new AppendAllTextWithHeadline();
             _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings, appendAllTextWithHeadline);
             _pingLogEntries = new ObservableCollection<PingLogEntry>();
+            var linkerTime = Assembly.GetExecutingAssembly().GetLinkerTime();
+            LinkerTime.Content = linkerTime.ToString(CultureInfo.InvariantCulture);
             Load();
         }
 
@@ -143,7 +147,15 @@ namespace PingResponseLog
             {
                 return;
             }
-            _style.SetTheme(sender);
+            var routedEventArgs = e as RoutedEventArgs;
+            if (routedEventArgs != null)
+            {
+                _style.SetTheme(sender, routedEventArgs);
+            }
+            else
+            {
+                _style.SetTheme(sender);
+            }
         }
 
         private void AccentOnSelectionChanged(object sender, SelectionChangedEventArgs e)

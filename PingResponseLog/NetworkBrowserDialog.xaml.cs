@@ -14,6 +14,7 @@ namespace PingResponseLog
     /// <summary>
     ///     Interaction logic for NetworkBrowserDialog.xaml
     /// </summary>
+    // ReSharper disable once RedundantExtendsListEntry
     public partial class NetworkBrowserDialog : MetroWindow
     {
         private INetworkBrowser _networkBrowser;
@@ -106,15 +107,16 @@ namespace PingResponseLog
         {
             var checkedItems = AddressList.Where(attribute => attribute.AddToAddresses);
             var addressList = _pingHelper.AddressList;
-            var addresses = string.Empty;
 
             foreach (var checkedItem in checkedItems.Where(checkedItem => !addressList.Contains(checkedItem.Name)))
             {
                 addressList.Add(checkedItem.Name);
             }
 
-            addresses = addressList.Aggregate(addresses, (current, s) => current + $"{s}, ");
-            _applicationSettings.Addresses = addresses.TrimStart(',').Trim().TrimEnd(',').ToLower();
+            //addresses = addressList.Aggregate(addresses, (current, s) => current + $"{s}, ");
+            //_applicationSettings.Addresses = addresses.TrimStart(',').Trim().TrimEnd(',').ToLower();
+
+            _applicationSettings.Addresses = string.Join(", ", addressList).ToLower();
         }
     }
 }

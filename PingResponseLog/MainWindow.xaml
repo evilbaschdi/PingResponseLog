@@ -3,7 +3,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Icon="baschdi.ico"
-                      Title="Ping Response Log" Height="350" Width="510">
+                      Title="Ping Response Log" Height="400" Width="510" TitleCharacterCasing="Normal">
     <!--  RightWindowCommands  -->
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
@@ -90,21 +90,14 @@
                              Header="Settings" Position="Right" Theme="Accent">
                 <StackPanel>
                     <StackPanel>
-                        <!--Application Style-->
-                        <StackPanel>
-                            <!-- InterNetwork -->
-                            <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
-                                <Label Width="60" Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                       Content="resolve ip" />
-
-                                <controls:ToggleSwitch Name="InterNetworkSwitch" Margin="10,1,0,0"
-                                                       HorizontalAlignment="Left" VerticalAlignment="Top"
-                                                       FontSize="12" IsCheckedChanged="InterNetwork"
-                                                       OnSwitchBrush="{DynamicResource AccentColorBrush}"
-                                                       OnLabel="IP v6"
-                                                       OffSwitchBrush="{DynamicResource AccentColorBrush}"
-                                                       OffLabel="IP v4" />
-                            </StackPanel>
+                        <!-- InterNetwork -->
+                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                            <Label Width="60" Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                   Content="resolve ip" />
+                            <controls:ToggleSwitch Name="InterNetworkSwitch" Margin="10,1,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12"
+                                                   IsCheckedChanged="InterNetwork"
+                                                   OnSwitchBrush="{DynamicResource AccentColorBrush}" OnLabel="IP v6"
+                                                   OffSwitchBrush="{DynamicResource AccentColorBrush}" OffLabel="IP v4" />
                         </StackPanel>
                         <!-- Logging -->
                         <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
@@ -142,7 +135,7 @@
                             </ComboBox>
                         </StackPanel>
                     </StackPanel>
-                    <!-- Line -->
+                    <!-- Horizontal Line -->
                     <StackPanel Margin="0,10,0,0" Orientation="Vertical">
                         <Rectangle Width="370" VerticalAlignment="Stretch" Stroke="{DynamicResource AccentColorBrush}" />
                     </StackPanel>
@@ -151,10 +144,8 @@
                         <!-- Theme -->
                         <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
                             <Label Width="60" Margin="0,5,0,0" HorizontalAlignment="Left"
-                                   VerticalAlignment="Top" Content="Theme" />
-                            <controls:ToggleSwitch Name="ThemeSwitch" Margin="10,1,0,0"
-                                                   HorizontalAlignment="Left" VerticalAlignment="Top"
-                                                   FontSize="12" IsCheckedChanged="Theme"
+                                   VerticalAlignment="Top" Content="theme" />
+                            <controls:ToggleSwitch Name="ThemeSwitch" Margin="10,1,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" IsCheckedChanged="Theme"
                                                    OnSwitchBrush="{DynamicResource AccentColorBrush}" OnLabel="Dark"
                                                    OffSwitchBrush="{DynamicResource AccentColorBrush}" OffLabel="Light" />
                         </StackPanel>
@@ -180,6 +171,15 @@
                                 </StackPanel>
                             </Button>
                         </StackPanel>
+                    </StackPanel>
+                    <!-- Horizontal Line -->
+                    <StackPanel Margin="0,10,0,0" Orientation="Vertical">
+                        <Rectangle Width="370" VerticalAlignment="Stretch" Stroke="{DynamicResource AccentColorBrush}" />
+                    </StackPanel>
+                    <!-- Build / Linker Time -->
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="60" Margin="10,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="build" />
+                        <Label Width="310" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Name="LinkerTime" />
                     </StackPanel>
                 </StackPanel>
             </controls:Flyout>
