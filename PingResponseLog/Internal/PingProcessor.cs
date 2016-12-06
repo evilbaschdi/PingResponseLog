@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.NetworkInformation;
@@ -59,12 +60,15 @@ namespace PingResponseLog.Internal
         {
             get
             {
-                var pingLogEntries = new ObservableCollection<PingLogEntry>();
+                var pingLogEntries = new ConcurrentBag<PingLogEntry>();
                 var stringBuilder = new StringBuilder();
 
                 Parallel.ForEach(_pingHelper.AddressList, address =>
                                                           {
-                                                              var pingLogEntry = new PingLogEntry();
+                                                              var pingLogEntry = new PingLogEntry
+                                                                                 {
+                                                                                     TimeStamp = DateTime.Now
+                                                                                 };
                                                               PingReply reply = null;
                                                               string response;
                                                               try
@@ -81,18 +85,22 @@ namespace PingResponseLog.Internal
                                                                   ? _pingHelper.GetDnsName(address)
                                                                   : new KeyValuePair<string, string>(address, "Error resolving IP or DNS name");
 
-                                                              pingLogEntry.TimeStamp = DateTime.Now;
+
                                                               pingLogEntry.Dns = dnsName.Value;
                                                               pingLogEntry.Ip = dnsName.Key;
                                                               pingLogEntry.Response = response;
                                                               pingLogEntries.Add(pingLogEntry);
                                                           });
 
+
                 //Parallel.ForEach(pingLogEntries, entry => { stringBuilder.Append($"{entry.TimeStamp};{entry.Dns};{entry.Ip};{entry.Response};{Environment.NewLine}"); });
 
                 foreach (var entry in pingLogEntries)
                 {
-                    stringBuilder.Append($"{entry.TimeStamp};{entry.Dns};{entry.Ip};{entry.Response};{Environment.NewLine}");
+                    if (entry != null)
+                    {
+                        stringBuilder.Append($"{entry.TimeStamp};{entry.Dns};{entry.Ip};{entry.Response};{Environment.NewLine}");
+                    }
                 }
 
                 _appendAllTextWithHeadline.For($@"{_applicationSettings.LoggingPath}\{_loggingHelper.PingResponseLogFileName}", stringBuilder, "TimeStamp;DNS;IP;Response;");
@@ -100,7 +108,7 @@ namespace PingResponseLog.Internal
                 var pingLog = new PingLog
                               {
                                   LogAsText = $"{stringBuilder}-----{Environment.NewLine}",
-                                  PingLogEntries = pingLogEntries
+                                  PingLogEntries = new ObservableCollection<PingLogEntry>(pingLogEntries)
                               };
                 return pingLog;
             }

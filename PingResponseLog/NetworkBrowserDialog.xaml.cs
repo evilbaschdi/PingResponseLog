@@ -113,9 +113,6 @@ namespace PingResponseLog
                 addressList.Add(checkedItem.Name);
             }
 
-            //addresses = addressList.Aggregate(addresses, (current, s) => current + $"{s}, ");
-            //_applicationSettings.Addresses = addresses.TrimStart(',').Trim().TrimEnd(',').ToLower();
-
             _applicationSettings.Addresses = string.Join(", ", addressList).ToLower();
         }
     }

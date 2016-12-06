@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using EvilBaschdi.Core.Application;
 using EvilBaschdi.Core.Browsers;
@@ -91,14 +92,15 @@ namespace PingResponseLog
 
         #region Ping
 
-        private void SetTimer()
+        private void SetTimer(TimeSpan diff)
         {
             _dispatcherTimer = new DispatcherTimer();
             _dispatcherTimer.Tick += PingTimerOnTick;
             _timeSpanHours = _applicationSettings.TimeSpanHours;
             _timeSpanMinutes = _applicationSettings.TimeSpanMinutes;
             _timeSpanSeconds = _applicationSettings.TimeSpanSeconds;
-            _dispatcherTimer.Interval = new TimeSpan(_timeSpanHours, _timeSpanMinutes, _timeSpanSeconds);
+            var configTimeSpan = new TimeSpan(_timeSpanHours, _timeSpanMinutes, _timeSpanSeconds);
+            _dispatcherTimer.Interval = configTimeSpan - diff;
             _dispatcherTimerRunning = true;
             _dispatcherTimer.Start();
         }
@@ -220,10 +222,13 @@ namespace PingResponseLog
             }
             else
             {
-                SetTimer();
+                var start = DateTime.Now;
                 var pingProcessorValue = _pingProcessor.Value;
                 _pingLogEntries = pingProcessorValue.PingLogEntries;
                 ResultGrid.ItemsSource = _pingLogEntries;
+                var end = DateTime.Now;
+                var diff = end - start;
+                SetTimer(diff);
                 PingButtonTextBlock.Text = "stop";
             }
         }
@@ -236,11 +241,18 @@ namespace PingResponseLog
         private void PingTimerOnTick(object sender, EventArgs e)
         {
             var pingProcessorValue = _pingProcessor.Value;
+
             foreach (var pingLogEntry in pingProcessorValue.PingLogEntries)
             {
                 _pingLogEntries.Add(pingLogEntry);
             }
             ResultGrid.ItemsSource = _pingLogEntries;
+            if (ResultGrid.Items.Count > 0)
+            {
+                var border = VisualTreeHelper.GetChild(ResultGrid, 0) as Decorator;
+                var scroll = border?.Child as ScrollViewer;
+                scroll?.ScrollToEnd();
+            }
         }
 
         private void InterNetwork(object sender, EventArgs e)
