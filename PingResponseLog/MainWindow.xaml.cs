@@ -52,11 +52,12 @@ namespace PingResponseLog
         /// </summary>
         public MainWindow()
         {
-            _applicationSettings = new ApplicationSettings();
-            _coreSettings = new CoreSettings();
-            _loggingHelper = new LoggingHelper(_applicationSettings);
             InitializeComponent();
-            _style = new MetroStyle(this, Accent, ThemeSwitch, _coreSettings);
+            _applicationSettings = new ApplicationSettings();
+            _coreSettings = new CoreSettings(Properties.Settings.Default);
+            _loggingHelper = new LoggingHelper(_applicationSettings);
+            IThemeManagerHelper themeManagerHelper = new ThemeManagerHelper();
+            _style = new MetroStyle(this, Accent, ThemeSwitch, _coreSettings, themeManagerHelper);
             _style.Load(true);
             _pingHelper = new PingHelper(_applicationSettings);
             IAppendAllTextWithHeadline appendAllTextWithHeadline = new AppendAllTextWithHeadline();
