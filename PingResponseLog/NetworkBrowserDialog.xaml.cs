@@ -47,10 +47,7 @@ namespace PingResponseLog
         {
             base.OnContentRendered(e);
 
-            if (_windowShown)
-            {
-                return;
-            }
+            if (_windowShown) { return; }
 
             _windowShown = true;
 
@@ -82,9 +79,9 @@ namespace PingResponseLog
             foreach (string computer in networkComputers)
             {
                 collection.Add(new Address
-                               {
-                                   Name = computer.ToLower()
-                               });
+                {
+                    Name = computer.ToLower()
+                });
             }
 
             return collection;
