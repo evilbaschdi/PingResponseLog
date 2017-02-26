@@ -137,7 +137,7 @@
                     </StackPanel>
                     <!-- Separator -->
                     <StackPanel Margin="15,10,15,0" Orientation="Vertical">
-                        <Separator Background="{DynamicResource AccentColorBrush}"/>
+                        <Separator Background="{DynamicResource AccentColorBrush}" />
                     </StackPanel>
                     <!--Application Style-->
                     <StackPanel>
@@ -174,7 +174,7 @@
                     </StackPanel>
                     <!-- Separator -->
                     <StackPanel Margin="15,10,15,0" Orientation="Vertical">
-                        <Separator Background="{DynamicResource AccentColorBrush}"/>
+                        <Separator Background="{DynamicResource AccentColorBrush}" />
                     </StackPanel>
                     <!-- Build / Linker Time -->
                     <StackPanel Orientation="Horizontal">

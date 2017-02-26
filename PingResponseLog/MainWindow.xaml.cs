@@ -117,7 +117,7 @@ namespace PingResponseLog
 
         private void ToggleFlyout(int index, bool stayOpen = false)
         {
-            var activeFlyout = (Flyout)Flyouts.Items[index];
+            var activeFlyout = (Flyout) Flyouts.Items[index];
             if (activeFlyout == null)
             {
                 return;
@@ -177,9 +177,9 @@ namespace PingResponseLog
         private void BrowseLoggingPathClick(object sender, RoutedEventArgs e)
         {
             var browser = new ExplorerFolderBrowser
-            {
-                SelectedPath = _applicationSettings.LoggingPath
-            };
+                          {
+                              SelectedPath = _applicationSettings.LoggingPath
+                          };
             browser.ShowDialog();
             _applicationSettings.LoggingPath = browser.SelectedPath;
             Load();
@@ -262,7 +262,7 @@ namespace PingResponseLog
             {
                 return;
             }
-            var toggleSwitch = (ToggleSwitch)sender;
+            var toggleSwitch = (ToggleSwitch) sender;
             _applicationSettings.InterNetworkType = toggleSwitch.IsChecked.HasValue && toggleSwitch.IsChecked.Value ? "V6" : "V4";
         }
 

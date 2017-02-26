@@ -1,28 +1,25 @@
 ﻿<controls:MetroWindow x:Class="PingResponseLog.NetworkBrowserDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Icon="baschdi.ico" TitleCharacterCasing="Normal"
-        Title="Browse Network" Height="300" Width="300" ShowMaxRestoreButton="False" ShowMinButton="False">
-    <Grid >
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Icon="baschdi.ico" TitleCharacterCasing="Normal"
+                      Title="Browse Network" Height="300" Width="300" ShowMaxRestoreButton="False" ShowMinButton="False">
+    <!-- TaskbarItemInfo -->
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo />
+    </Window.TaskbarItemInfo>
+    <!--Grid-->
+    <Grid>
         <ListBox Name="AddressListBox" Margin="10" Visibility="Hidden">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <CheckBox IsChecked="{Binding AddToAddresses}"  >
+                    <CheckBox IsChecked="{Binding AddToAddresses}">
                         <CheckBox.Content>
-                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Name}" />
                         </CheckBox.Content>
                     </CheckBox>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Label Name="Loading" Content="Loading..." FontSize="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
     </Grid>
 </controls:MetroWindow>
-
-
-
-
-
-
-

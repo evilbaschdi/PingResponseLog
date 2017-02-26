@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Shell;
 using EvilBaschdi.Core.Browsers;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using PingResponseLog.Core;
 using PingResponseLog.Internal;
 using PingResponseLog.Models;
@@ -21,7 +24,8 @@ namespace PingResponseLog
         private readonly IApplicationSettings _applicationSettings;
         private readonly IPingHelper _pingHelper;
         private bool _windowShown;
-        private readonly BackgroundWorker _bw;
+        private ProgressDialogController _controller;
+        private Task<ObservableCollection<Address>> _task;
 
         /// <summary>
         /// </summary>
@@ -35,7 +39,6 @@ namespace PingResponseLog
             _applicationSettings = new ApplicationSettings();
             _pingHelper = new PingHelper(_applicationSettings);
             InitializeComponent();
-            _bw = new BackgroundWorker();
         }
 
 
@@ -43,32 +46,80 @@ namespace PingResponseLog
         ///     Executing code when window is shown.
         /// </summary>
         /// <param name="e"></param>
-        protected override void OnContentRendered(EventArgs e)
+        protected override async void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
 
-            if (_windowShown) { return; }
+            if (_windowShown)
+            {
+                return;
+            }
 
             _windowShown = true;
 
-            _bw.DoWork += (o, args) => LoadAddressList();
-            _bw.WorkerReportsProgress = true;
-            _bw.RunWorkerCompleted += SetAddressListBox;
-            _bw.RunWorkerAsync();
+            await ConfigureController();
         }
 
-
-        private void SetAddressListBox(object sender, RunWorkerCompletedEventArgs e)
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public async Task ConfigureController()
         {
+            TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+
+            Cursor = Cursors.Wait;
+
+            var options = new MetroDialogSettings
+                          {
+                              ColorScheme = MetroDialogColorScheme.Accented
+                          };
+
+            MetroDialogOptions = options;
+            _controller = await this.ShowProgressAsync("Loading...", "search is running", true, options);
+            _controller.SetIndeterminate();
+            _controller.Canceled += ControllerCanceled;
+
+            _task = Task<ObservableCollection<Address>>.Factory.StartNew(LoadAddressList);
+            await _task;
+            _task.GetAwaiter().OnCompleted(TaskCompleted);
+        }
+
+        private void TaskCompleted()
+        {
+            AddressList = _task.Result;
             AddressListBox.ItemsSource = AddressList;
             AddressListBox.Visibility = Visibility.Visible;
-            Loading.Visibility = Visibility.Hidden;
+            _controller.CloseAsync();
+            _controller.Closed += ControllerClosed;
         }
 
-        private void LoadAddressList()
+        private void ControllerClosed(object sender, EventArgs e)
+        {
+            TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+            TaskbarItemInfo.ProgressValue = 1;
+            Cursor = Cursors.Arrow;
+        }
+
+        private void ControllerCanceled(object sender, EventArgs e)
+        {
+            _controller.CloseAsync();
+            _controller.Closed += ControllerClosed;
+        }
+
+        private ObservableCollection<Address> LoadAddressList()
         {
             _networkBrowser = new NetworkBrowser();
-            AddressList = GetAddressList();
+
+            var addressList = GetAddressList();
+            foreach (var address in addressList)
+            {
+                if (_pingHelper.AddressList.Contains(address.Name))
+                {
+                    address.AddToAddresses = true;
+                }
+            }
+
+            return addressList;
         }
 
         private ObservableCollection<Address> GetAddressList()
@@ -79,9 +130,9 @@ namespace PingResponseLog
             foreach (string computer in networkComputers)
             {
                 collection.Add(new Address
-                {
-                    Name = computer.ToLower()
-                });
+                               {
+                                   Name = computer.ToLower()
+                               });
             }
 
             return collection;
@@ -102,12 +153,21 @@ namespace PingResponseLog
 
         private void UpdateAddresses()
         {
-            var checkedItems = AddressList.Where(attribute => attribute.AddToAddresses);
             var addressList = _pingHelper.AddressList;
 
-            foreach (var checkedItem in checkedItems.Where(checkedItem => !addressList.Contains(checkedItem.Name)))
+            foreach (var address in AddressList)
             {
-                addressList.Add(checkedItem.Name);
+                if (address.AddToAddresses)
+                {
+                    if (!addressList.Contains(address.Name))
+                    {
+                        addressList.Add(address.Name);
+                    }
+                }
+                else
+                {
+                    addressList.Remove(address.Name);
+                }
             }
 
             _applicationSettings.Addresses = string.Join(", ", addressList).ToLower();
