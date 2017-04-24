@@ -53,26 +53,33 @@ namespace PingResponseLog.Internal
         /// </summary>
         public KeyValuePair<string, string> GetDnsName(string input)
         {
-            var ipHostEntry = Dns.GetHostEntry(input);
-            var hostName = ipHostEntry.HostName;
-            var ip = string.Empty;
-
-            foreach (var ipAddress in ipHostEntry.AddressList)
+            try
             {
-                if (_applicationSettings.InterNetworkType == "V6" && ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                var ipHostEntry = Dns.GetHostEntry(input);
+                var hostName = ipHostEntry.HostName;
+                var ip = string.Empty;
+
+                foreach (var ipAddress in ipHostEntry.AddressList)
                 {
-                    ip = ipAddress.ToString();
-                    break;
+                    if (_applicationSettings.InterNetworkType == "V6" && ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    {
+                        ip = ipAddress.ToString();
+                        break;
+                    }
+                    if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    {
+                        ip = ipAddress.ToString();
+                        break;
+                    }
                 }
-                if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    ip = ipAddress.ToString();
-                    break;
-                }
+                return string.IsNullOrWhiteSpace(ip) || string.IsNullOrWhiteSpace(hostName)
+                    ? new KeyValuePair<string, string>(input, "Error resolving IP or DNS name")
+                    : new KeyValuePair<string, string>(ip, hostName);
             }
-            return string.IsNullOrWhiteSpace(ip) || string.IsNullOrWhiteSpace(hostName)
-                ? new KeyValuePair<string, string>(input, "Error resolving IP or DNS name")
-                : new KeyValuePair<string, string>(ip, hostName);
+            catch (Exception e)
+            {
+                return new KeyValuePair<string, string>(input, e.Message);
+            }
         }
 
         /// <summary>
