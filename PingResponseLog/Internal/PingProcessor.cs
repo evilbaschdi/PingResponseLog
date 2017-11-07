@@ -31,27 +31,10 @@ namespace PingResponseLog.Internal
         /// </exception>
         public PingProcessor(IPingHelper pingHelper, ILoggingHelper loggingHelper, IApplicationSettings applicationSettings, IAppendAllTextWithHeadline appendAllTextWithHeadline)
         {
-            if (pingHelper == null)
-            {
-                throw new ArgumentNullException(nameof(pingHelper));
-            }
-            if (loggingHelper == null)
-            {
-                throw new ArgumentNullException(nameof(loggingHelper));
-            }
-            if (applicationSettings == null)
-            {
-                throw new ArgumentNullException(nameof(applicationSettings));
-            }
-            if (appendAllTextWithHeadline == null)
-            {
-                throw new ArgumentNullException(nameof(appendAllTextWithHeadline));
-            }
-
-            _pingHelper = pingHelper;
-            _loggingHelper = loggingHelper;
-            _applicationSettings = applicationSettings;
-            _appendAllTextWithHeadline = appendAllTextWithHeadline;
+            _pingHelper = pingHelper ?? throw new ArgumentNullException(nameof(pingHelper));
+            _loggingHelper = loggingHelper ?? throw new ArgumentNullException(nameof(loggingHelper));
+            _applicationSettings = applicationSettings ?? throw new ArgumentNullException(nameof(applicationSettings));
+            _appendAllTextWithHeadline = appendAllTextWithHeadline ?? throw new ArgumentNullException(nameof(appendAllTextWithHeadline));
         }
 
         /// <summary>
