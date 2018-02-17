@@ -1,6 +1,4 @@
-﻿// ReSharper disable once RedundantUsingDirective
-
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -10,10 +8,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using EvilBaschdi.Core.Application;
-using EvilBaschdi.Core.Browsers;
+using EvilBaschdi.Core.Extensions;
 using EvilBaschdi.Core.Logging;
-using EvilBaschdi.Core.Wpf;
+using EvilBaschdi.CoreExtended.AppHelpers;
+using EvilBaschdi.CoreExtended.Browsers;
+using EvilBaschdi.CoreExtended.Metro;
 using MahApps.Metro.Controls;
 using PingResponseLog.Core;
 using PingResponseLog.Internal;
@@ -26,18 +25,14 @@ namespace PingResponseLog
     /// </summary>
     public partial class MainWindow
     {
-        /// <summary>
-        /// </summary>
-        public MainWindow CurrentHiddenInstance { get; set; }
-
         private DispatcherTimer _dispatcherTimer;
         private bool _dispatcherTimerRunning;
 
         // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
-        private readonly IMetroStyle _style;
-
+        private readonly IApplicationStyle _applicationStyle;
+        private readonly IApplicationStyleSettings _applicationStyleSettings;
         private readonly IApplicationSettings _applicationSettings;
-        private readonly ISettings _coreSettings;
+        private readonly IAppSettingsBase _appSettingsBase;
         private readonly IPingHelper _pingHelper;
         private readonly ILoggingHelper _loggingHelper;
         private readonly IPingProcessor _pingProcessor;
@@ -53,12 +48,14 @@ namespace PingResponseLog
         public MainWindow()
         {
             InitializeComponent();
-            _applicationSettings = new ApplicationSettings();
-            _coreSettings = new CoreSettings(Properties.Settings.Default);
+
+            _appSettingsBase = new AppSettingsBase(Properties.Settings.Default);
+            _applicationSettings = new ApplicationSettings(_appSettingsBase);
+            _applicationStyleSettings = new ApplicationStyleSettings(_appSettingsBase);
             _loggingHelper = new LoggingHelper(_applicationSettings);
             IThemeManagerHelper themeManagerHelper = new ThemeManagerHelper();
-            _style = new MetroStyle(this, Accent, ThemeSwitch, _coreSettings, themeManagerHelper);
-            _style.Load(true);
+            _applicationStyle = new ApplicationStyle(this, Accent, ThemeSwitch, _applicationStyleSettings, themeManagerHelper);
+            _applicationStyle.Load(true);
             _pingHelper = new PingHelper(_applicationSettings);
             IAppendAllTextWithHeadline appendAllTextWithHeadline = new AppendAllTextWithHeadline();
             _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings, appendAllTextWithHeadline);
@@ -141,7 +138,8 @@ namespace PingResponseLog
             {
                 return;
             }
-            _style.SaveStyle();
+
+            _applicationStyle.SaveStyle();
         }
 
         private void Theme(object sender, EventArgs e)
@@ -150,14 +148,15 @@ namespace PingResponseLog
             {
                 return;
             }
+
             var routedEventArgs = e as RoutedEventArgs;
             if (routedEventArgs != null)
             {
-                _style.SetTheme(sender, routedEventArgs);
+                _applicationStyle.SetTheme(sender, routedEventArgs);
             }
             else
             {
-                _style.SetTheme(sender);
+                _applicationStyle.SetTheme(sender);
             }
         }
 
@@ -167,7 +166,8 @@ namespace PingResponseLog
             {
                 return;
             }
-            _style.SetAccent(sender, e);
+
+            _applicationStyle.SetAccent(sender, e);
         }
 
         #endregion MetroStyle
@@ -247,6 +247,7 @@ namespace PingResponseLog
             {
                 _pingLogEntries.Add(pingLogEntry);
             }
+
             ResultGrid.ItemsSource = _pingLogEntries;
             if (ResultGrid.Items.Count > 0)
             {
@@ -262,6 +263,7 @@ namespace PingResponseLog
             {
                 return;
             }
+
             var toggleSwitch = (ToggleSwitch) sender;
             _applicationSettings.InterNetworkType = toggleSwitch.IsChecked.HasValue && toggleSwitch.IsChecked.Value ? "V6" : "V4";
         }

@@ -30,17 +30,20 @@ namespace PingResponseLog.Internal
             {
                 var addressList = new List<string>();
                 var addressString = _applicationSettings.Addresses;
-                if (!string.IsNullOrWhiteSpace(addressString))
+                if (string.IsNullOrWhiteSpace(addressString))
                 {
-                    if (addressString.Contains(","))
-                    {
-                        addressList.AddRange(addressString.Split(',').Select(address => address.Trim()));
-                    }
-                    else
-                    {
-                        addressList.Add(addressString.Trim());
-                    }
+                    return addressList;
                 }
+
+                if (addressString.Contains(","))
+                {
+                    addressList.AddRange(addressString.Split(',').Select(address => address.Trim()));
+                }
+                else
+                {
+                    addressList.Add(addressString.Trim());
+                }
+
                 return addressList;
             }
         }
@@ -62,12 +65,14 @@ namespace PingResponseLog.Internal
                         ip = ipAddress.ToString();
                         break;
                     }
+
                     if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     {
                         ip = ipAddress.ToString();
                         break;
                     }
                 }
+
                 return string.IsNullOrWhiteSpace(ip) || string.IsNullOrWhiteSpace(hostName)
                     ? new KeyValuePair<string, string>(input, "Error resolving IP or DNS name")
                     : new KeyValuePair<string, string>(ip, hostName);
@@ -181,6 +186,7 @@ namespace PingResponseLog.Internal
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             return status;
         }
     }

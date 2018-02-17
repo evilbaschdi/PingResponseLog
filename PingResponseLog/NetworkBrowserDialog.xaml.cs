@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
-using EvilBaschdi.Core.Browsers;
+using EvilBaschdi.CoreExtended.AppHelpers;
+using EvilBaschdi.CoreExtended.Browsers;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using PingResponseLog.Core;
 using PingResponseLog.Internal;
 using PingResponseLog.Models;
+using PingResponseLog.Properties;
 
 namespace PingResponseLog
 {
@@ -36,7 +38,8 @@ namespace PingResponseLog
         public NetworkBrowserDialog()
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            _applicationSettings = new ApplicationSettings();
+            IAppSettingsBase appSettingsBase = new AppSettingsBase(Settings.Default);
+            _applicationSettings = new ApplicationSettings(appSettingsBase);
             _pingHelper = new PingHelper(_applicationSettings);
             InitializeComponent();
         }
@@ -124,16 +127,8 @@ namespace PingResponseLog
 
         private ObservableCollection<Address> GetAddressList()
         {
-            var networkComputers = _networkBrowser.GetNetworkComputers;
             var collection = new ObservableCollection<Address>();
-
-            foreach (string computer in networkComputers)
-            {
-                collection.Add(new Address
-                               {
-                                   Name = computer.ToLower()
-                               });
-            }
+            _networkBrowser.Value.ForEach(c => collection.Add(new Address { Name = c.ToLower() }));
 
             return collection;
         }
@@ -148,6 +143,7 @@ namespace PingResponseLog
             {
                 UpdateAddresses();
             }
+
             base.OnClosing(e);
         }
 

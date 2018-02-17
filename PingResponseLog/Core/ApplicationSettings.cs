@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using EvilBaschdi.CoreExtended.AppHelpers;
 
 namespace PingResponseLog.Core
 {
@@ -8,108 +9,79 @@ namespace PingResponseLog.Core
     /// </summary>
     public class ApplicationSettings : IApplicationSettings
     {
+        private readonly IAppSettingsBase _appSettingsBase;
+
         /// <summary>
         /// </summary>
         public string Addresses
         {
-            get => string.IsNullOrWhiteSpace(Properties.Settings.Default.Addresses)
-                ? ""
-                : Properties.Settings.Default.Addresses;
-            set
-            {
-                Properties.Settings.Default.Addresses = value;
-                Properties.Settings.Default.Save();
-            }
+            get => _appSettingsBase.Get<string>("Addresses");
+            set => _appSettingsBase.Set("Addresses", value);
+        }
+
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="appSettingsBase"></param>
+        public ApplicationSettings(IAppSettingsBase appSettingsBase)
+        {
+            _appSettingsBase = appSettingsBase ?? throw new ArgumentNullException(nameof(appSettingsBase));
         }
 
         /// <summary>
         /// </summary>
         public string LoggingPath
         {
-            get => string.IsNullOrWhiteSpace(Properties.Settings.Default.LoggingPath)
-                ? Path.GetTempPath()
-                : Properties.Settings.Default.LoggingPath;
-            set
-            {
-                Properties.Settings.Default.LoggingPath = value;
-                Properties.Settings.Default.Save();
-            }
+            get => _appSettingsBase.Get("LoggingPath", Path.GetTempPath());
+            set => _appSettingsBase.Set("LoggingPath", value);
         }
 
         /// <summary>
         /// </summary>
         public DateTime CurrentLoggingDateTime
         {
-            get => Properties.Settings.Default.CurrentLoggingDateTime;
-            set
-            {
-                Properties.Settings.Default.CurrentLoggingDateTime = value;
-                Properties.Settings.Default.Save();
-            }
+            get => _appSettingsBase.Get<DateTime>("CurrentLoggingDateTime");
+            set => _appSettingsBase.Set("CurrentLoggingDateTime", value);
         }
 
         /// <summary>
         /// </summary>
         public string LoggingFileInterval
         {
-            get => string.IsNullOrWhiteSpace(Properties.Settings.Default.LoggingFileInterval)
-                ? Path.GetTempPath()
-                : Properties.Settings.Default.LoggingFileInterval;
-            set
-            {
-                Properties.Settings.Default.LoggingFileInterval = value;
-                Properties.Settings.Default.Save();
-            }
+            get => _appSettingsBase.Get("LoggingFileInterval", Path.GetTempPath());
+            set => _appSettingsBase.Set("LoggingFileInterval", value);
         }
 
         /// <summary>
         /// </summary>
         public string InterNetworkType
         {
-            get => string.IsNullOrWhiteSpace(Properties.Settings.Default.InterNetworkType)
-                ? "V4"
-                : Properties.Settings.Default.InterNetworkType;
-            set
-            {
-                Properties.Settings.Default.InterNetworkType = value;
-                Properties.Settings.Default.Save();
-            }
+            get => _appSettingsBase.Get("InterNetworkType", "V4");
+            set => _appSettingsBase.Set("InterNetworkType", value);
         }
 
         /// <summary>
         /// </summary>
         public int TimeSpanHours
         {
-            get => Properties.Settings.Default.TimeSpanHours;
-            set
-            {
-                Properties.Settings.Default.TimeSpanHours = value;
-                Properties.Settings.Default.Save();
-            }
+            get => _appSettingsBase.Get<int>("TimeSpanHours");
+            set => _appSettingsBase.Set("TimeSpanHours", value);
         }
 
         /// <summary>
         /// </summary>
         public int TimeSpanMinutes
         {
-            get => Properties.Settings.Default.TimeSpanMinutes;
-            set
-            {
-                Properties.Settings.Default.TimeSpanMinutes = value;
-                Properties.Settings.Default.Save();
-            }
+            get => _appSettingsBase.Get<int>("TimeSpanMinutes");
+            set => _appSettingsBase.Set("TimeSpanMinutes", value);
         }
 
         /// <summary>
         /// </summary>
         public int TimeSpanSeconds
         {
-            get => Properties.Settings.Default.TimeSpanSeconds;
-            set
-            {
-                Properties.Settings.Default.TimeSpanSeconds = value;
-                Properties.Settings.Default.Save();
-            }
+            get => _appSettingsBase.Get<int>("TimeSpanSeconds");
+            set => _appSettingsBase.Set("TimeSpanSeconds", value);
         }
     }
 }

@@ -76,8 +76,6 @@ namespace PingResponseLog.Internal
                                                           });
 
 
-                //Parallel.ForEach(pingLogEntries, entry => { stringBuilder.Append($"{entry.TimeStamp};{entry.Dns};{entry.Ip};{entry.Response};{Environment.NewLine}"); });
-
                 foreach (var entry in pingLogEntries)
                 {
                     if (entry != null)
@@ -86,14 +84,13 @@ namespace PingResponseLog.Internal
                     }
                 }
 
-                _appendAllTextWithHeadline.For($@"{_applicationSettings.LoggingPath}\{_loggingHelper.PingResponseLogFileName}", stringBuilder, "TimeStamp;DNS;IP;Response;");
+                _appendAllTextWithHeadline.RunFor($@"{_applicationSettings.LoggingPath}\{_loggingHelper.PingResponseLogFileName}", stringBuilder, "TimeStamp;DNS;IP;Response;");
 
-                var pingLog = new PingLog
-                              {
-                                  LogAsText = $"{stringBuilder}-----{Environment.NewLine}",
-                                  PingLogEntries = new ObservableCollection<PingLogEntry>(pingLogEntries)
-                              };
-                return pingLog;
+                return new PingLog
+                       {
+                           LogAsText = $"{stringBuilder}-----{Environment.NewLine}",
+                           PingLogEntries = new ObservableCollection<PingLogEntry>(pingLogEntries)
+                       };
             }
         }
     }
