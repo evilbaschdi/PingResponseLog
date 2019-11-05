@@ -1,5 +1,5 @@
 using EvilBaschdi.Core;
-using PingResponseLog.Models;
+using PingResponseLog.Internal.Models;
 
 namespace PingResponseLog.Internal
 {

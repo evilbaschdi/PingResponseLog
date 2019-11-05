@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PingResponseLog.Core
+namespace PingResponseLog.Internal.Core
 {
     /// <summary>
     ///     Wrapper arround Default Settings.

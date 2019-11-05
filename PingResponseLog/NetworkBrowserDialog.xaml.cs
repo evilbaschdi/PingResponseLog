@@ -9,9 +9,9 @@ using EvilBaschdi.CoreExtended.AppHelpers;
 using EvilBaschdi.CoreExtended.Browsers;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using PingResponseLog.Core;
 using PingResponseLog.Internal;
-using PingResponseLog.Models;
+using PingResponseLog.Internal.Core;
+using PingResponseLog.Internal.Models;
 using PingResponseLog.Properties;
 
 namespace PingResponseLog

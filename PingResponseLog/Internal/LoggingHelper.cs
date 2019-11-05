@@ -1,5 +1,5 @@
 ﻿using System;
-using PingResponseLog.Core;
+using PingResponseLog.Internal.Core;
 
 namespace PingResponseLog.Internal
 {

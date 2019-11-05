@@ -6,8 +6,8 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using EvilBaschdi.Core.Logging;
-using PingResponseLog.Core;
-using PingResponseLog.Models;
+using PingResponseLog.Internal.Core;
+using PingResponseLog.Internal.Models;
 
 namespace PingResponseLog.Internal
 {

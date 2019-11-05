@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using PingResponseLog.Core;
+using PingResponseLog.Internal.Core;
 
 namespace PingResponseLog.Internal
 {

@@ -2,7 +2,7 @@
 using System.IO;
 using EvilBaschdi.CoreExtended.AppHelpers;
 
-namespace PingResponseLog.Core
+namespace PingResponseLog.Internal.Core
 {
     /// <summary>
     ///     Wrapper around Default Settings.

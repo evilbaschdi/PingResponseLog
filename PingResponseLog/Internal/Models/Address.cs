@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace PingResponseLog.Models
+namespace PingResponseLog.Internal.Models
 {
     /// <summary>
     /// </summary>

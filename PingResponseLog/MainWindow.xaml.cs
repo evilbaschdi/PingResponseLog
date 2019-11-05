@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using EvilBaschdi.Core.Extensions;
 using EvilBaschdi.Core.Logging;
 using EvilBaschdi.CoreExtended.AppHelpers;
 using EvilBaschdi.CoreExtended.Browsers;
 using EvilBaschdi.CoreExtended.Metro;
+using EvilBaschdi.CoreExtended.Mvvm;
+using EvilBaschdi.CoreExtended.Mvvm.View;
+using EvilBaschdi.CoreExtended.Mvvm.ViewModel;
 using MahApps.Metro.Controls;
-using PingResponseLog.Core;
 using PingResponseLog.Internal;
-using PingResponseLog.Models;
+using PingResponseLog.Internal.Core;
+using PingResponseLog.Internal.Models;
+using PingResponseLog.Internal.ViewModels;
 
 namespace PingResponseLog
 {
@@ -30,12 +31,12 @@ namespace PingResponseLog
 
         // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly IApplicationStyle _applicationStyle;
-        private readonly IApplicationStyleSettings _applicationStyleSettings;
         private readonly IApplicationSettings _applicationSettings;
         private readonly IAppSettingsBase _appSettingsBase;
         private readonly IPingHelper _pingHelper;
         private readonly ILoggingHelper _loggingHelper;
         private readonly IPingProcessor _pingProcessor;
+        private readonly IThemeManagerHelper _themeManagerHelper;
         private ObservableCollection<PingLogEntry> _pingLogEntries;
 
         private int _overrideProtection;
@@ -51,17 +52,14 @@ namespace PingResponseLog
 
             _appSettingsBase = new AppSettingsBase(Properties.Settings.Default);
             _applicationSettings = new ApplicationSettings(_appSettingsBase);
-            _applicationStyleSettings = new ApplicationStyleSettings(_appSettingsBase);
             _loggingHelper = new LoggingHelper(_applicationSettings);
-            IThemeManagerHelper themeManagerHelper = new ThemeManagerHelper();
-            _applicationStyle = new ApplicationStyle(this, Accent, ThemeSwitch, _applicationStyleSettings, themeManagerHelper);
+             _themeManagerHelper = new ThemeManagerHelper();
+            _applicationStyle = new ApplicationStyle(_themeManagerHelper);
             _applicationStyle.Load(true);
             _pingHelper = new PingHelper(_applicationSettings);
             IAppendAllTextWithHeadline appendAllTextWithHeadline = new AppendAllTextWithHeadline();
             _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings, appendAllTextWithHeadline);
             _pingLogEntries = new ObservableCollection<PingLogEntry>();
-            var linkerTime = Assembly.GetExecutingAssembly().GetLinkerTime();
-            LinkerTime.Content = linkerTime.ToString(CultureInfo.InvariantCulture);
             Load();
         }
 
@@ -129,48 +127,6 @@ namespace PingResponseLog
         }
 
         #endregion Flyout
-
-        #region MetroStyle
-
-        private void SaveStyleClick(object sender, RoutedEventArgs e)
-        {
-            if (_overrideProtection == 0)
-            {
-                return;
-            }
-
-            _applicationStyle.SaveStyle();
-        }
-
-        private void Theme(object sender, EventArgs e)
-        {
-            if (_overrideProtection == 0)
-            {
-                return;
-            }
-
-            var routedEventArgs = e as RoutedEventArgs;
-            if (routedEventArgs != null)
-            {
-                _applicationStyle.SetTheme(sender, routedEventArgs);
-            }
-            else
-            {
-                _applicationStyle.SetTheme(sender);
-            }
-        }
-
-        private void AccentOnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_overrideProtection == 0)
-            {
-                return;
-            }
-
-            _applicationStyle.SetAccent(sender, e);
-        }
-
-        #endregion MetroStyle
 
         #region LoggingHelper
 
@@ -249,6 +205,12 @@ namespace PingResponseLog
             }
 
             ResultGrid.ItemsSource = _pingLogEntries;
+
+
+
+
+
+
             if (ResultGrid.Items.Count > 0)
             {
                 var border = VisualTreeHelper.GetChild(ResultGrid, 0) as Decorator;
@@ -271,9 +233,12 @@ namespace PingResponseLog
         private void BrowseNetworkOnClick(object sender, RoutedEventArgs e)
         {
             var networkBrowserDialog = new NetworkBrowserDialog();
+            {
+                DataContext = new NetworkBrowserDialogViewModel(_themeManagerHelper);
+            };
 
             networkBrowserDialog.Closing += NetworkBrowserDialogClosing;
-            networkBrowserDialog.Show();
+            networkBrowserDialog.ShowDialog();
         }
 
         private void NetworkBrowserDialogClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -284,6 +249,19 @@ namespace PingResponseLog
         private void LoggingFileIntervalOnDropDownClosed(object sender, EventArgs e)
         {
             _applicationSettings.LoggingFileInterval = LoggingFileInterval.Text;
+        }
+
+        private void AboutWindowClick(object sender, RoutedEventArgs e)
+        {
+            var assembly = typeof(MainWindow).Assembly;
+            IAboutWindowContent aboutWindowContent = new AboutWindowContent(assembly, $@"{AppDomain.CurrentDomain.BaseDirectory}\b.png");
+
+            var aboutWindow = new AboutWindow
+                              {
+                                  DataContext = new AboutViewModel(aboutWindowContent, _themeManagerHelper)
+                              };
+
+            aboutWindow.ShowDialog();
         }
 
         #endregion Events

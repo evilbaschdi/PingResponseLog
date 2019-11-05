@@ -3,7 +3,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                      GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Icon="baschdi.ico"
+                      GlowBrush="{DynamicResource MahApps.Brushes.AccentBase}" ShowIconOnTitleBar="False" Icon="baschdi.ico"
                       Title="Ping Response Log" Height="600" Width="800" TitleCharacterCasing="Normal">
     <!--  RightWindowCommands  -->
     <controls:MetroWindow.RightWindowCommands>
@@ -15,11 +15,19 @@
                     <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" Text="search" />
                 </StackPanel>
             </Button>
+
             <!--  Settings  -->
             <Button Click="ToggleSettingsFlyoutClick">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterial Kind="Settings" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" Text="settings" />
+                </StackPanel>
+            </Button>
+            <!-- About -->
+            <Button Click="AboutWindowClick">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial Kind="Information" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" Text="about" />
                 </StackPanel>
             </Button>
         </controls:WindowCommands>
@@ -57,7 +65,7 @@
                                 ValueChanged="TimeSpanSecondsOnValueChanged" />
         <!-- Result -->
         <DataGrid x:Name="ResultGrid" Margin="10,80,10,10" AutoGenerateColumns="False" CanUserAddRows="False"
-                  CanUserDeleteRows="False" ColumnWidth="*" SelectionUnit="FullRow" Style="{DynamicResource AzureDataGrid}"
+                  CanUserDeleteRows="False" ColumnWidth="*" SelectionUnit="FullRow" Style="{DynamicResource MahApps.Styles.DataGrid.Azure}"
                   GridLinesVisibility="Horizontal" IsReadOnly="True">
 
             <DataGrid.Columns>
@@ -82,8 +90,8 @@
                                    Content="resolve ip" />
                             <controls:ToggleSwitch Name="InterNetworkSwitch" Margin="10,1,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12"
                                                    IsCheckedChanged="InterNetwork"
-                                                   OnSwitchBrush="{DynamicResource AccentColorBrush}" OnLabel="IP v6"
-                                                   OffSwitchBrush="{DynamicResource AccentColorBrush}" OffLabel="IP v4" />
+                                                   OnSwitchBrush="{DynamicResource MahApps.Brushes.AccentBase}" OnLabel="IP v6"
+                                                   OffSwitchBrush="{DynamicResource MahApps.Brushes.AccentBase}" OffLabel="IP v4" />
                         </StackPanel>
                         <!-- Logging -->
                         <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
@@ -115,47 +123,6 @@
                                 <ComboBoxItem Content="per year" />
                             </ComboBox>
                         </StackPanel>
-                    </StackPanel>
-                    <!-- Separator -->
-                    <StackPanel Margin="15,10,15,0" Orientation="Vertical">
-                        <Separator Background="{DynamicResource AccentColorBrush}" />
-                    </StackPanel>
-                    <!--Application Style-->
-                    <StackPanel>
-                        <!-- Theme -->
-                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
-                            <Label Width="60" Margin="0,5,0,0" HorizontalAlignment="Left"
-                                   VerticalAlignment="Top" Content="theme" />
-                            <controls:ToggleSwitch Name="ThemeSwitch" Margin="10,1,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" IsCheckedChanged="Theme"
-                                                   OnSwitchBrush="{DynamicResource AccentColorBrush}" OnLabel="Dark"
-                                                   OffSwitchBrush="{DynamicResource AccentColorBrush}" OffLabel="Light" />
-                        </StackPanel>
-                        <!-- Accent -->
-                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
-                            <Label Width="60" Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                   Content="accent" />
-                            <ComboBox x:Name="Accent" Width="305" Margin="10,5,0,0" HorizontalAlignment="Left"
-                                      VerticalAlignment="Top"
-                                      SelectionChanged="AccentOnSelectionChanged" />
-                        </StackPanel>
-                        <!-- Save Style -->
-                        <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
-                            <Button x:Name="SaveStyle" Width="305" Margin="70,5,0,0" Click="SaveStyleClick">
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:PackIconMaterial Kind="ContentSaveSettings" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                    <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Text="save style" />
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
-                    <!-- Separator -->
-                    <StackPanel Margin="15,10,15,0" Orientation="Vertical">
-                        <Separator Background="{DynamicResource AccentColorBrush}" />
-                    </StackPanel>
-                    <!-- Build / Linker Time -->
-                    <StackPanel Orientation="Horizontal">
-                        <Label Width="60" Margin="10,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="build" />
-                        <Label Width="310" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Name="LinkerTime" />
                     </StackPanel>
                 </StackPanel>
             </controls:Flyout>
