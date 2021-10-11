@@ -1,26 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
- 
+
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PingResponseLog</RootNamespace>
     <AssemblyName>PingResponseLog</AssemblyName>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    
-    
-       <Authors>Sebastian Walter</Authors>
+    <Authors>Sebastian Walter</Authors>
     <Company>evilbaschdi (Sebastian Walter)</Company>
     <PackageProjectUrl>https://github.com/evilbaschdi/PingResponseLog</PackageProjectUrl>
     <RepositoryUrl>https://github.com/evilbaschdi/PingResponseLog</RepositoryUrl>
     <PackageIconUrl>https://github.com/evilbaschdi/PingResponseLog/blob/master/PingResponseLog/baschdi.ico</PackageIconUrl>
-    <Version>$([System.DateTime]::UtcNow.ToString(yyyy.M.d.Hmm))-develop</Version>
+    <Version>$([System.DateTime]::UtcNow.ToString(yyyy.M.d.Hmm))</Version>
     <Copyright>Copyright © 2016 - $([System.DateTime]::UtcNow.ToString(yyyy)) evilbaschdi</Copyright>
-        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PingResponseLog.xml</DocumentationFile>
-    <LangVersion>8</LangVersion>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PingResponseLog.xml</DocumentationFile>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
- 
+
   <PropertyGroup>
     <ApplicationIcon>baschdi.ico</ApplicationIcon>
   </PropertyGroup>
@@ -48,11 +47,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ControlzEx" Version="4.1.1" />
-    <PackageReference Include="EvilBaschdi.Core" Version="2019.10.10.1115-develop" />
-    <PackageReference Include="EvilBaschdi.CoreExtended" Version="2019.10.21.1930-develop" />
-    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0531" />
-    <PackageReference Include="MahApps.Metro.IconPacks" Version="3.0.0-alpha0258" />
+    <PackageReference Include="ControlzEx" Version="5.0.1" />
+    <PackageReference Include="EvilBaschdi.Core" Version="2021.10.11.609-develop" />
+    <PackageReference Include="EvilBaschdi.CoreExtended" Version="2021.9.28.1631-develop" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.7" />
+    <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.10.0" />
+    <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.10.0" />
+    <PackageReference Include="System.DirectoryServices" Version="6.0.0-rc.1.21451.13" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

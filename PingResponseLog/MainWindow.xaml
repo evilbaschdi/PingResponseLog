@@ -19,7 +19,7 @@
             <!--  Settings  -->
             <Button Click="ToggleSettingsFlyoutClick">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Settings" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <iconPacks:PackIconMaterialDesign Kind="Settings" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" Text="settings" />
                 </StackPanel>
             </Button>
@@ -89,9 +89,7 @@
                             <Label Width="60" Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"
                                    Content="resolve ip" />
                             <controls:ToggleSwitch Name="InterNetworkSwitch" Margin="10,1,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12"
-                                                   IsCheckedChanged="InterNetwork"
-                                                   OnSwitchBrush="{DynamicResource MahApps.Brushes.AccentBase}" OnLabel="IP v6"
-                                                   OffSwitchBrush="{DynamicResource MahApps.Brushes.AccentBase}" OffLabel="IP v4" />
+                                                   Toggled="InterNetwork" OnContent="IP v6" OffContent="IP v4" />
                         </StackPanel>
                         <!-- Logging -->
                         <StackPanel Margin="10,5,0,0" Orientation="Horizontal">

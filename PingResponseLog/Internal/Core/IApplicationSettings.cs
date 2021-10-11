@@ -13,11 +13,11 @@ namespace PingResponseLog.Internal.Core
 
         /// <summary>
         /// </summary>
-        string LoggingPath { get; set; }
+        DateTime CurrentLoggingDateTime { get; set; }
 
         /// <summary>
         /// </summary>
-        DateTime CurrentLoggingDateTime { get; set; }
+        string InterNetworkType { get; set; }
 
         /// <summary>
         /// </summary>
@@ -25,7 +25,7 @@ namespace PingResponseLog.Internal.Core
 
         /// <summary>
         /// </summary>
-        string InterNetworkType { get; set; }
+        string LoggingPath { get; set; }
 
         /// <summary>
         /// </summary>

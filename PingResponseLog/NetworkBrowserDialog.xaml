@@ -13,8 +13,10 @@
         <ListBox Name="AddressListBox" Margin="10" Visibility="Hidden">
             <ListBox.ItemTemplate>
                 <DataTemplate>
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                     <CheckBox IsChecked="{Binding AddToAddresses}">
                         <CheckBox.Content>
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <TextBlock Text="{Binding Name}" />
                         </CheckBox.Content>
                     </CheckBox>

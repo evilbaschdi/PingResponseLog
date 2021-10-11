@@ -11,7 +11,7 @@ namespace PingResponseLog.Internal.Models
         /// <summary>
         /// </summary>
         [DataMember]
-        public DateTime TimeStamp { get; set; }
+        public string Dns { get; set; }
 
         /// <summary>
         /// </summary>
@@ -21,11 +21,11 @@ namespace PingResponseLog.Internal.Models
         /// <summary>
         /// </summary>
         [DataMember]
-        public string Dns { get; set; }
+        public string Response { get; set; }
 
         /// <summary>
         /// </summary>
         [DataMember]
-        public string Response { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

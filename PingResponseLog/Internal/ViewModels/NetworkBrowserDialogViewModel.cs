@@ -1,5 +1,4 @@
-﻿using System;
-using EvilBaschdi.CoreExtended.Metro;
+﻿using EvilBaschdi.CoreExtended;
 using EvilBaschdi.CoreExtended.Mvvm.ViewModel;
 
 namespace PingResponseLog.Internal.ViewModels
@@ -8,11 +7,13 @@ namespace PingResponseLog.Internal.ViewModels
     public class NetworkBrowserDialogViewModel : ApplicationStyleViewModel
     {
         /// <summary>
+        ///     Constructor
         /// </summary>
-        /// <param name="themeManagerHelper"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public NetworkBrowserDialogViewModel(IThemeManagerHelper themeManagerHelper)
-            : base(themeManagerHelper)
+        /// <param name="roundCorners"></param>
+        /// <param name="center"></param>
+        /// <param name="resizeWithBorder400"></param>
+        public NetworkBrowserDialogViewModel(IRoundCorners roundCorners, bool center = false, bool resizeWithBorder400 = false)
+            : base(roundCorners, center, resizeWithBorder400)
         {
         }
     }

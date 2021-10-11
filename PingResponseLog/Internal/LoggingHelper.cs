@@ -29,6 +29,7 @@ namespace PingResponseLog.Internal
                 {
                     return _fileName;
                 }
+
                 _applicationSettings.CurrentLoggingDateTime = DateTime.Now;
                 _fileName = $"PingResponseLog_{_applicationSettings.CurrentLoggingDateTime:yyyy-MM-dd_HHmm}.csv";
                 return _fileName;

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,10 +13,10 @@ namespace PingResponseLog.Internal
     /// </summary>
     public class PingProcessor : IPingProcessor
     {
-        private readonly IPingHelper _pingHelper;
-        private readonly ILoggingHelper _loggingHelper;
-        private readonly IApplicationSettings _applicationSettings;
         private readonly IAppendAllTextWithHeadline _appendAllTextWithHeadline;
+        private readonly IApplicationSettings _applicationSettings;
+        private readonly ILoggingHelper _loggingHelper;
+        private readonly IPingHelper _pingHelper;
 
         /// <summary>
         ///     Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.
@@ -64,13 +62,13 @@ namespace PingResponseLog.Internal
                                                                   response = "Destination Host or Network Unreachable";
                                                               }
 
-                                                              var dnsName = reply != null && reply.Status == IPStatus.Success
+                                                              var (ip, dns) = reply is { Status: IPStatus.Success }
                                                                   ? _pingHelper.GetDnsName(address)
-                                                                  : new KeyValuePair<string, string>(address, "Error resolving IP or DNS name");
+                                                                  : new(address, "Error resolving IP or DNS name");
 
 
-                                                              pingLogEntry.Dns = dnsName.Value;
-                                                              pingLogEntry.Ip = dnsName.Key;
+                                                              pingLogEntry.Dns = dns;
+                                                              pingLogEntry.Ip = ip;
                                                               pingLogEntry.Response = response;
                                                               pingLogEntries.Add(pingLogEntry);
                                                           });
@@ -86,10 +84,10 @@ namespace PingResponseLog.Internal
 
                 _appendAllTextWithHeadline.RunFor($@"{_applicationSettings.LoggingPath}\{_loggingHelper.PingResponseLogFileName}", stringBuilder, "TimeStamp;DNS;IP;Response;");
 
-                return new PingLog
+                return new()
                        {
                            LogAsText = $"{stringBuilder}-----{Environment.NewLine}",
-                           PingLogEntries = new ObservableCollection<PingLogEntry>(pingLogEntries)
+                           PingLogEntries = new(pingLogEntries)
                        };
             }
         }

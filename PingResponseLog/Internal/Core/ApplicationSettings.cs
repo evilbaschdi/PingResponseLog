@@ -12,20 +12,20 @@ namespace PingResponseLog.Internal.Core
         private readonly IAppSettingsBase _appSettingsBase;
 
         /// <summary>
-        /// </summary>
-        public string Addresses
-        {
-            get => _appSettingsBase.Get<string>("Addresses");
-            set => _appSettingsBase.Set("Addresses", value);
-        }
-
-        /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="appSettingsBase"></param>
         public ApplicationSettings(IAppSettingsBase appSettingsBase)
         {
             _appSettingsBase = appSettingsBase ?? throw new ArgumentNullException(nameof(appSettingsBase));
+        }
+
+        /// <summary>
+        /// </summary>
+        public string Addresses
+        {
+            get => _appSettingsBase.Get("Addresses", "localhost");
+            set => _appSettingsBase.Set("Addresses", value);
         }
 
         /// <summary>

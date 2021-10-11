@@ -11,11 +11,11 @@ namespace PingResponseLog.Internal.Models
         /// <summary>
         /// </summary>
         [DataMember]
-        public ObservableCollection<PingLogEntry> PingLogEntries { get; set; }
+        public string LogAsText { get; set; }
 
         /// <summary>
         /// </summary>
         [DataMember]
-        public string LogAsText { get; set; }
+        public ObservableCollection<PingLogEntry> PingLogEntries { get; set; }
     }
 }

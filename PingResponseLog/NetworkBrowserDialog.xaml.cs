@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
 using EvilBaschdi.CoreExtended.AppHelpers;
-using EvilBaschdi.CoreExtended.Browsers;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using PingResponseLog.Internal;
@@ -22,16 +21,12 @@ namespace PingResponseLog
     // ReSharper disable once RedundantExtendsListEntry
     public partial class NetworkBrowserDialog : MetroWindow
     {
-        private INetworkBrowser _networkBrowser;
         private readonly IApplicationSettings _applicationSettings;
         private readonly IPingHelper _pingHelper;
-        private bool _windowShown;
         private ProgressDialogController _controller;
+        private INetworkBrowser _networkBrowser;
         private Task<ObservableCollection<Address>> _task;
-
-        /// <summary>
-        /// </summary>
-        public ObservableCollection<Address> AddressList { get; set; }
+        private bool _windowShown;
 
         /// <summary>
         /// </summary>
@@ -43,6 +38,11 @@ namespace PingResponseLog
             _pingHelper = new PingHelper(_applicationSettings);
             InitializeComponent();
         }
+
+        /// <summary>
+        /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
+        public ObservableCollection<Address> AddressList { get; set; }
 
 
         /// <summary>
@@ -66,6 +66,7 @@ namespace PingResponseLog
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        // ReSharper disable once MemberCanBePrivate.Global
         public async Task ConfigureController()
         {
             TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
@@ -128,7 +129,8 @@ namespace PingResponseLog
         private ObservableCollection<Address> GetAddressList()
         {
             var collection = new ObservableCollection<Address>();
-            _networkBrowser.Value.ForEach(c => collection.Add(new Address { Name = c.ToLower() }));
+            _networkBrowser.Value.ForEach(c => collection.Add(new()
+                                                              { Name = c.ToLower() }));
 
             return collection;
         }

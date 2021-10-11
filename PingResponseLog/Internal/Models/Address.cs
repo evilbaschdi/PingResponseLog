@@ -10,11 +10,11 @@ namespace PingResponseLog.Internal.Models
         /// <summary>
         /// </summary>
         [DataMember]
-        public string Name { get; set; }
+        public bool AddToAddresses { get; set; }
 
         /// <summary>
         /// </summary>
         [DataMember]
-        public bool AddToAddresses { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -7,12 +7,10 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using EvilBaschdi.Core.Logging;
+using EvilBaschdi.CoreExtended;
 using EvilBaschdi.CoreExtended.AppHelpers;
 using EvilBaschdi.CoreExtended.Browsers;
-using EvilBaschdi.CoreExtended.Metro;
-using EvilBaschdi.CoreExtended.Mvvm;
-using EvilBaschdi.CoreExtended.Mvvm.View;
-using EvilBaschdi.CoreExtended.Mvvm.ViewModel;
+using EvilBaschdi.CoreExtended.Controls.About;
 using MahApps.Metro.Controls;
 using PingResponseLog.Internal;
 using PingResponseLog.Internal.Core;
@@ -27,22 +25,21 @@ namespace PingResponseLog
     public partial class MainWindow
     {
         private DispatcherTimer _dispatcherTimer;
-        private bool _dispatcherTimerRunning;
-
-        // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
+        private bool _dispatcherTimerRunning; // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly IApplicationStyle _applicationStyle;
         private readonly IApplicationSettings _applicationSettings;
         private readonly IAppSettingsBase _appSettingsBase;
         private readonly IPingHelper _pingHelper;
         private readonly ILoggingHelper _loggingHelper;
         private readonly IPingProcessor _pingProcessor;
-        private readonly IThemeManagerHelper _themeManagerHelper;
+
         private ObservableCollection<PingLogEntry> _pingLogEntries;
 
         private int _overrideProtection;
         private int _timeSpanHours;
         private int _timeSpanMinutes;
         private int _timeSpanSeconds;
+        private readonly IRoundCorners _roundCorners;
 
         /// <summary>
         /// </summary>
@@ -53,13 +50,14 @@ namespace PingResponseLog
             _appSettingsBase = new AppSettingsBase(Properties.Settings.Default);
             _applicationSettings = new ApplicationSettings(_appSettingsBase);
             _loggingHelper = new LoggingHelper(_applicationSettings);
-             _themeManagerHelper = new ThemeManagerHelper();
-            _applicationStyle = new ApplicationStyle(_themeManagerHelper);
-            _applicationStyle.Load(true);
+
+            _roundCorners = new RoundCorners();
+            _applicationStyle = new ApplicationStyle(_roundCorners, true);
+            _applicationStyle.Run();
             _pingHelper = new PingHelper(_applicationSettings);
             IAppendAllTextWithHeadline appendAllTextWithHeadline = new AppendAllTextWithHeadline();
             _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings, appendAllTextWithHeadline);
-            _pingLogEntries = new ObservableCollection<PingLogEntry>();
+            _pingLogEntries = new();
             Load();
         }
 
@@ -72,16 +70,12 @@ namespace PingResponseLog
             TimeSpanSeconds.Value = _applicationSettings.TimeSpanSeconds;
             LoggingFileInterval.Text = _applicationSettings.LoggingFileInterval;
 
-            switch (_applicationSettings.InterNetworkType)
+            InterNetworkSwitch.IsOn = _applicationSettings.InterNetworkType switch
             {
-                case "V4":
-                    InterNetworkSwitch.IsChecked = false;
-                    break;
-
-                case "V6":
-                    InterNetworkSwitch.IsChecked = true;
-                    break;
-            }
+                "V4" => false,
+                "V6" => true,
+                _ => InterNetworkSwitch.IsOn
+            };
 
             _overrideProtection = 1;
         }
@@ -90,7 +84,7 @@ namespace PingResponseLog
 
         private void SetTimer(TimeSpan diff)
         {
-            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer = new();
             _dispatcherTimer.Tick += PingTimerOnTick;
             _timeSpanHours = _applicationSettings.TimeSpanHours;
             _timeSpanMinutes = _applicationSettings.TimeSpanMinutes;
@@ -112,7 +106,7 @@ namespace PingResponseLog
 
         private void ToggleFlyout(int index, bool stayOpen = false)
         {
-            var activeFlyout = (Flyout) Flyouts.Items[index];
+            var activeFlyout = (Flyout)Flyouts.Items[index];
             if (activeFlyout == null)
             {
                 return;
@@ -143,11 +137,13 @@ namespace PingResponseLog
 
         private void LoggingPathOnLostFocus(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(LoggingPath.Text))
+            if (!Directory.Exists(LoggingPath.Text))
             {
-                _applicationSettings.LoggingPath = LoggingPath.Text;
-                Load();
+                return;
             }
+
+            _applicationSettings.LoggingPath = LoggingPath.Text;
+            Load();
         }
 
         #endregion LoggingHelper
@@ -207,35 +203,33 @@ namespace PingResponseLog
             ResultGrid.ItemsSource = _pingLogEntries;
 
 
-
-
-
-
-            if (ResultGrid.Items.Count > 0)
+            if (ResultGrid.Items.Count <= 0)
             {
-                var border = VisualTreeHelper.GetChild(ResultGrid, 0) as Decorator;
-                var scroll = border?.Child as ScrollViewer;
-                scroll?.ScrollToEnd();
+                return;
             }
+
+            var border = VisualTreeHelper.GetChild(ResultGrid, 0) as Decorator;
+            var scroll = border?.Child as ScrollViewer;
+            scroll?.ScrollToEnd();
         }
 
-        private void InterNetwork(object sender, EventArgs e)
+        private void InterNetwork(object sender, RoutedEventArgs e)
         {
             if (_overrideProtection == 0)
             {
                 return;
             }
 
-            var toggleSwitch = (ToggleSwitch) sender;
-            _applicationSettings.InterNetworkType = toggleSwitch.IsChecked.HasValue && toggleSwitch.IsChecked.Value ? "V6" : "V4";
+            var toggleSwitch = (ToggleSwitch)sender;
+            _applicationSettings.InterNetworkType = toggleSwitch.IsOn ? "V6" : "V4";
         }
 
         private void BrowseNetworkOnClick(object sender, RoutedEventArgs e)
         {
             var networkBrowserDialog = new NetworkBrowserDialog();
             {
-                DataContext = new NetworkBrowserDialogViewModel(_themeManagerHelper);
-            };
+                DataContext = new NetworkBrowserDialogViewModel(_roundCorners);
+            }
 
             networkBrowserDialog.Closing += NetworkBrowserDialogClosing;
             networkBrowserDialog.ShowDialog();
@@ -254,11 +248,11 @@ namespace PingResponseLog
         private void AboutWindowClick(object sender, RoutedEventArgs e)
         {
             var assembly = typeof(MainWindow).Assembly;
-            IAboutWindowContent aboutWindowContent = new AboutWindowContent(assembly, $@"{AppDomain.CurrentDomain.BaseDirectory}\b.png");
+            IAboutContent aboutWindowContent = new AboutContent(assembly, $@"{AppDomain.CurrentDomain.BaseDirectory}\b.png");
 
             var aboutWindow = new AboutWindow
                               {
-                                  DataContext = new AboutViewModel(aboutWindowContent, _themeManagerHelper)
+                                  DataContext = new AboutViewModel(aboutWindowContent, _roundCorners)
                               };
 
             aboutWindow.ShowDialog();

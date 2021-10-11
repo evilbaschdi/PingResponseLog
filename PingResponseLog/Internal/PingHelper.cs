@@ -66,20 +66,22 @@ namespace PingResponseLog.Internal
                         break;
                     }
 
-                    if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    if (ipAddress.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork)
                     {
-                        ip = ipAddress.ToString();
-                        break;
+                        continue;
                     }
+
+                    ip = ipAddress.ToString();
+                    break;
                 }
 
                 return string.IsNullOrWhiteSpace(ip) || string.IsNullOrWhiteSpace(hostName)
-                    ? new KeyValuePair<string, string>(input, "Error resolving IP or DNS name")
+                    ? new(input, "Error resolving IP or DNS name")
                     : new KeyValuePair<string, string>(ip, hostName);
             }
             catch (Exception e)
             {
-                return new KeyValuePair<string, string>(input, e.Message);
+                return new(input, e.Message);
             }
         }
 
@@ -88,104 +90,33 @@ namespace PingResponseLog.Internal
         /// <exception cref="ArgumentOutOfRangeException">default.</exception>
         public string GetResponse(PingReply reply)
         {
-            string status;
-            switch (reply.Status)
+            var status = reply.Status switch
             {
-                case IPStatus.Success:
-                    status = $"{reply.RoundtripTime} ms";
-                    break;
-
-                case IPStatus.TimedOut:
-                    status = "Timeout";
-                    break;
-
-                case IPStatus.DestinationNetworkUnreachable:
-                    status = "Destination Network Unreachable";
-                    break;
-
-                case IPStatus.DestinationHostUnreachable:
-                    status = "Destination Host Unreachable";
-                    break;
-
-                case IPStatus.DestinationProtocolUnreachable:
-                    status = "Destination Protocol Unreachable";
-                    break;
-
-                case IPStatus.DestinationPortUnreachable:
-                    status = "Destination Port Unreachable";
-                    break;
-
-                case IPStatus.NoResources:
-                    status = "No Resources";
-                    break;
-
-                case IPStatus.BadOption:
-                    status = "Bad Option";
-                    break;
-
-                case IPStatus.HardwareError:
-                    status = "Hardware Error";
-                    break;
-
-                case IPStatus.PacketTooBig:
-                    status = "PacketTooBig";
-                    break;
-
-                case IPStatus.BadRoute:
-                    status = "Bad Route";
-                    break;
-
-                case IPStatus.TtlExpired:
-                    status = "Ttl Expired";
-                    break;
-
-                case IPStatus.TtlReassemblyTimeExceeded:
-                    status = "Ttl Reassembly Time Exceeded";
-                    break;
-
-                case IPStatus.ParameterProblem:
-                    status = "Parameter Problem";
-                    break;
-
-                case IPStatus.SourceQuench:
-                    status = "Source Quench";
-                    break;
-
-                case IPStatus.BadDestination:
-                    status = "Bad Destination";
-                    break;
-
-                case IPStatus.DestinationUnreachable:
-                    status = "Destination Unreachable";
-                    break;
-
-                case IPStatus.TimeExceeded:
-                    status = "Time Exceeded";
-                    break;
-
-                case IPStatus.BadHeader:
-                    status = "Bad Header";
-                    break;
-
-                case IPStatus.UnrecognizedNextHeader:
-                    status = "Unrecognized Next Header";
-                    break;
-
-                case IPStatus.IcmpError:
-                    status = "Icmp Error";
-                    break;
-
-                case IPStatus.DestinationScopeMismatch:
-                    status = "Destination Scope Mismatch";
-                    break;
-
-                case IPStatus.Unknown:
-                    status = "Unknown";
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                IPStatus.Success => $"{reply.RoundtripTime} ms",
+                IPStatus.TimedOut => "Timeout",
+                IPStatus.DestinationNetworkUnreachable => "Destination Network Unreachable",
+                IPStatus.DestinationHostUnreachable => "Destination Host Unreachable",
+                IPStatus.DestinationProtocolUnreachable => "Destination Protocol Unreachable",
+                IPStatus.DestinationPortUnreachable => "Destination Port Unreachable",
+                IPStatus.NoResources => "No Resources",
+                IPStatus.BadOption => "Bad Option",
+                IPStatus.HardwareError => "Hardware Error",
+                IPStatus.PacketTooBig => "PacketTooBig",
+                IPStatus.BadRoute => "Bad Route",
+                IPStatus.TtlExpired => "Ttl Expired",
+                IPStatus.TtlReassemblyTimeExceeded => "Ttl Reassembly Time Exceeded",
+                IPStatus.ParameterProblem => "Parameter Problem",
+                IPStatus.SourceQuench => "Source Quench",
+                IPStatus.BadDestination => "Bad Destination",
+                IPStatus.DestinationUnreachable => "Destination Unreachable",
+                IPStatus.TimeExceeded => "Time Exceeded",
+                IPStatus.BadHeader => "Bad Header",
+                IPStatus.UnrecognizedNextHeader => "Unrecognized Next Header",
+                IPStatus.IcmpError => "Icmp Error",
+                IPStatus.DestinationScopeMismatch => "Destination Scope Mismatch",
+                IPStatus.Unknown => "Unknown",
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
             return status;
         }
