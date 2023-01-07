@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using EvilBaschdi.Core;
+﻿using EvilBaschdi.Core;
 
-namespace PingResponseLog.Internal
+namespace PingResponseLog.Internal;
+
+/// <inheritdoc />
+/// <summary>
+///     Interface for NetworkBrowser.
+/// </summary>
+public interface INetworkBrowser : IValueOfList<string>
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     Interface for NetworkBrowser.
+    ///     Contains an Exception if Value has thrown some.
     /// </summary>
-    public interface INetworkBrowser : IValue<List<string>>
-    {
-        /// <summary>
-        ///     Contains an Exception if Value has thrown some.
-        /// </summary>
-        // ReSharper disable once UnusedMemberInSuper.Global
-        // ReSharper disable once UnusedMember.Global
-        Exception Exception { get; }
-    }
+    // ReSharper disable once UnusedMemberInSuper.Global
+    // ReSharper disable once UnusedMember.Global
+    Exception Exception { get; }
 }

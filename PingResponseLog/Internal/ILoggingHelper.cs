@@ -1,11 +1,10 @@
-﻿namespace PingResponseLog.Internal
+﻿namespace PingResponseLog.Internal;
+
+/// <summary>
+/// </summary>
+public interface ILoggingHelper
 {
     /// <summary>
     /// </summary>
-    public interface ILoggingHelper
-    {
-        /// <summary>
-        /// </summary>
-        string PingResponseLogFileName { get; }
-    }
+    string PingResponseLogFileName { get; }
 }

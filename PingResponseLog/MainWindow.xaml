@@ -3,7 +3,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                      GlowBrush="{DynamicResource MahApps.Brushes.AccentBase}" ShowIconOnTitleBar="False" Icon="baschdi.ico"
+                      ShowIconOnTitleBar="False" Icon="baschdi.ico"
                       Title="Ping Response Log" Height="600" Width="800" TitleCharacterCasing="Normal">
     <!--  RightWindowCommands  -->
     <controls:MetroWindow.RightWindowCommands>
@@ -81,7 +81,7 @@
         <controls:FlyoutsControl>
             <!--  Settings Flyout  -->
             <controls:Flyout x:Name="SettingsFlyout" Width="400" AnimateOnPositionChange="True" AnimateOpacity="True"
-                             Header="Settings" Position="Right" Theme="Accent">
+                             Header="Settings" Position="Right" Theme="Adapt">
                 <StackPanel>
                     <StackPanel>
                         <!-- InterNetwork -->

@@ -1,87 +1,86 @@
-﻿using System;
-using System.IO;
-using EvilBaschdi.CoreExtended.AppHelpers;
+﻿using System.Globalization;
+using EvilBaschdi.Settings.ByMachineAndUser;
+using JetBrains.Annotations;
 
-namespace PingResponseLog.Internal.Core
+namespace PingResponseLog.Internal.Core;
+
+/// <summary>
+///     Wrapper around Default Settings.
+/// </summary>
+public class ApplicationSettings : IApplicationSettings
 {
+    private readonly IAppSettingByKey _appSettingByKey;
+
     /// <summary>
-    ///     Wrapper around Default Settings.
+    ///     Constructor
     /// </summary>
-    public class ApplicationSettings : IApplicationSettings
+    /// <param name="appSettingByKey"></param>
+    public ApplicationSettings([NotNull] IAppSettingByKey appSettingByKey)
     {
-        private readonly IAppSettingsBase _appSettingsBase;
+        _appSettingByKey = appSettingByKey ?? throw new ArgumentNullException(nameof(appSettingByKey));
+    }
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        /// <param name="appSettingsBase"></param>
-        public ApplicationSettings(IAppSettingsBase appSettingsBase)
-        {
-            _appSettingsBase = appSettingsBase ?? throw new ArgumentNullException(nameof(appSettingsBase));
-        }
+    /// <summary>
+    /// </summary>
+    public string Addresses
+    {
+        get => _appSettingByKey.ValueFor("Addresses");
+        set => _appSettingByKey.RunFor("Addresses", value);
+    }
 
-        /// <summary>
-        /// </summary>
-        public string Addresses
-        {
-            get => _appSettingsBase.Get("Addresses", "localhost");
-            set => _appSettingsBase.Set("Addresses", value);
-        }
+    /// <summary>
+    /// </summary>
+    public string LoggingPath
+    {
+        get => _appSettingByKey.ValueFor("LoggingPath");
+        set => _appSettingByKey.RunFor("LoggingPath", value);
+    }
 
-        /// <summary>
-        /// </summary>
-        public string LoggingPath
-        {
-            get => _appSettingsBase.Get("LoggingPath", Path.GetTempPath());
-            set => _appSettingsBase.Set("LoggingPath", value);
-        }
+    /// <summary>
+    /// </summary>
+    public DateTime CurrentLoggingDateTime
+    {
+        get => Convert.ToDateTime(_appSettingByKey.ValueFor("CurrentLoggingDateTime"), CultureInfo.InvariantCulture);
+        set => _appSettingByKey.RunFor("CurrentLoggingDateTime", value.ToString(CultureInfo.InvariantCulture));
+    }
 
-        /// <summary>
-        /// </summary>
-        public DateTime CurrentLoggingDateTime
-        {
-            get => _appSettingsBase.Get<DateTime>("CurrentLoggingDateTime");
-            set => _appSettingsBase.Set("CurrentLoggingDateTime", value);
-        }
+    /// <summary>
+    /// </summary>
+    public string LoggingFileInterval
+    {
+        get => _appSettingByKey.ValueFor("LoggingFileInterval");
+        set => _appSettingByKey.RunFor("LoggingFileInterval", value);
+    }
 
-        /// <summary>
-        /// </summary>
-        public string LoggingFileInterval
-        {
-            get => _appSettingsBase.Get("LoggingFileInterval", Path.GetTempPath());
-            set => _appSettingsBase.Set("LoggingFileInterval", value);
-        }
+    /// <summary>
+    /// </summary>
+    public string InterNetworkType
+    {
+        get => _appSettingByKey.ValueFor("InterNetworkType");
+        set => _appSettingByKey.RunFor("InterNetworkType", value);
+    }
 
-        /// <summary>
-        /// </summary>
-        public string InterNetworkType
-        {
-            get => _appSettingsBase.Get("InterNetworkType", "V4");
-            set => _appSettingsBase.Set("InterNetworkType", value);
-        }
+    /// <summary>
+    /// </summary>
+    public int TimeSpanHours
+    {
+        get => Convert.ToInt32(_appSettingByKey.ValueFor("TimeSpanHours"));
+        set => _appSettingByKey.RunFor("TimeSpanHours", value.ToString());
+    }
 
-        /// <summary>
-        /// </summary>
-        public int TimeSpanHours
-        {
-            get => _appSettingsBase.Get<int>("TimeSpanHours");
-            set => _appSettingsBase.Set("TimeSpanHours", value);
-        }
+    /// <summary>
+    /// </summary>
+    public int TimeSpanMinutes
+    {
+        get => Convert.ToInt32(_appSettingByKey.ValueFor("TimeSpanMinutes"));
+        set => _appSettingByKey.RunFor("TimeSpanMinutes", value.ToString());
+    }
 
-        /// <summary>
-        /// </summary>
-        public int TimeSpanMinutes
-        {
-            get => _appSettingsBase.Get<int>("TimeSpanMinutes");
-            set => _appSettingsBase.Set("TimeSpanMinutes", value);
-        }
-
-        /// <summary>
-        /// </summary>
-        public int TimeSpanSeconds
-        {
-            get => _appSettingsBase.Get<int>("TimeSpanSeconds");
-            set => _appSettingsBase.Set("TimeSpanSeconds", value);
-        }
+    /// <summary>
+    /// </summary>
+    public int TimeSpanSeconds
+    {
+        get => Convert.ToInt32(_appSettingByKey.ValueFor("TimeSpanSeconds"));
+        set => _appSettingByKey.RunFor("TimeSpanSeconds", value.ToString());
     }
 }
