@@ -9,9 +9,9 @@ using EvilBaschdi.About.Core.Models;
 using EvilBaschdi.About.Wpf;
 using EvilBaschdi.Core;
 using EvilBaschdi.Core.Logging;
-using EvilBaschdi.CoreExtended;
-using EvilBaschdi.CoreExtended.Browsers;
-using EvilBaschdi.CoreExtended.FlyOut;
+using EvilBaschdi.Core.Wpf;
+using EvilBaschdi.Core.Wpf.Browsers;
+using EvilBaschdi.Core.Wpf.FlyOut;
 using EvilBaschdi.Settings.ByMachineAndUser;
 using MahApps.Metro.Controls;
 using PingResponseLog.Internal;
@@ -241,8 +241,9 @@ public partial class MainWindow
     {
         ICurrentAssembly currentAssembly = new CurrentAssembly();
         IAboutContent aboutContent = new AboutContent(currentAssembly);
-        IAboutModel aboutModel = new AboutViewModel(aboutContent);
-        var aboutWindow = new AboutWindow(aboutModel);
+        IAboutViewModel aboutModel = new AboutViewModel(aboutContent);
+        IApplyMicaBrush applyMicaBrush = new ApplyMicaBrush();
+        var aboutWindow = new AboutWindow(aboutModel, applyMicaBrush);
 
         aboutWindow.ShowDialog();
     }
