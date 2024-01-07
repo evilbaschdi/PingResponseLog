@@ -5,7 +5,7 @@
 		<AppDesignerFolder>Properties</AppDesignerFolder>
 		<RootNamespace>PingResponseLog</RootNamespace>
 		<AssemblyName>PingResponseLog</AssemblyName>
-		<TargetFramework>net7.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<Authors>Sebastian Walter</Authors>
 		<Company>evilbaschdi (Sebastian Walter)</Company>
@@ -46,21 +46,13 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="EvilBaschdi.Core.Wpf" Version="2023.2.20.2127-develop" />
-		<PackageReference Include="EvilBaschdi.About.Wpf" Version="2023.2.19.836-develop" />
-		<PackageReference Include="EvilBaschdi.Settings" Version="2023.2.21.1756" />
-		<PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.11.0" />
-		<PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.11.0" />
-		<PackageReference Include="Microsoft.SourceLink.AzureRepos.Git" Version="1.1.1">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="System.DirectoryServices" Version="8.0.0-preview.1.23110.8" />
-		<PackageReference Include="WpfAnalyzers" Version="4.1.1">
+		<PackageReference Include="EvilBaschdi.Core.Wpf" />
+		<PackageReference Include="EvilBaschdi.About.Wpf" />
+		<PackageReference Include="EvilBaschdi.Settings" />
+		<PackageReference Include="MahApps.Metro.IconPacks.Material" />
+		<PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" />
+		<PackageReference Include="System.DirectoryServices" />
+		<PackageReference Include="WpfAnalyzers">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

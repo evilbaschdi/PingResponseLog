@@ -28,6 +28,7 @@ public partial class MainWindow
 {
     private DispatcherTimer _dispatcherTimer;
     private bool _dispatcherTimerRunning; // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
+    private readonly IApplicationLayout _applicationLayout;
     private readonly IApplicationStyle _applicationStyle;
     private readonly IApplicationSettings _applicationSettings;
 
@@ -58,8 +59,10 @@ public partial class MainWindow
         _applicationSettings = new ApplicationSettings(_appSettingByKey);
         _loggingHelper = new LoggingHelper(_applicationSettings);
 
-        _applicationStyle = new ApplicationStyle(true);
+        _applicationStyle = new ApplicationStyle();
+        _applicationLayout = new ApplicationLayout();
         _applicationStyle.Run();
+        _applicationLayout.RunFor((true, false));
         _pingHelper = new PingHelper(_applicationSettings);
         IAppendAllTextWithHeadline appendAllTextWithHeadline = new AppendAllTextWithHeadline();
         _pingProcessor = new PingProcessor(_pingHelper, _loggingHelper, _applicationSettings, appendAllTextWithHeadline);
@@ -220,7 +223,7 @@ public partial class MainWindow
     {
         var networkBrowserDialog = new NetworkBrowserDialog();
         {
-            DataContext = new NetworkBrowserDialogViewModel(_applicationStyle);
+            DataContext = new NetworkBrowserDialogViewModel(_applicationLayout, _applicationStyle);
         }
 
         networkBrowserDialog.Closing += NetworkBrowserDialogClosing;
@@ -243,7 +246,8 @@ public partial class MainWindow
         IAboutContent aboutContent = new AboutContent(currentAssembly);
         IAboutViewModel aboutModel = new AboutViewModel(aboutContent);
         IApplyMicaBrush applyMicaBrush = new ApplyMicaBrush();
-        var aboutWindow = new AboutWindow(aboutModel, applyMicaBrush);
+        IApplicationLayout applicationLayout = new ApplicationLayout();
+        var aboutWindow = new AboutWindow(aboutModel, applicationLayout, applyMicaBrush);
 
         aboutWindow.ShowDialog();
     }
