@@ -7,7 +7,6 @@ namespace PingResponseLog.Internal;
 public class LoggingHelper : ILoggingHelper
 {
     private readonly IApplicationSettings _applicationSettings;
-    private string _fileName;
 
     /// <summary>
     ///     Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.
@@ -24,26 +23,27 @@ public class LoggingHelper : ILoggingHelper
     {
         get
         {
-            if (!string.IsNullOrWhiteSpace(_fileName) && IsCurrentDateTimeValid())
+            if (!string.IsNullOrWhiteSpace(field) && IsCurrentDateTimeValid())
             {
-                return _fileName;
+                return field;
             }
 
             _applicationSettings.CurrentLoggingDateTime = DateTime.Now;
-            _fileName = $"PingResponseLog_{_applicationSettings.CurrentLoggingDateTime:yyyy-MM-dd_HHmm}.csv";
-            return _fileName;
+            field = $"PingResponseLog_{_applicationSettings.CurrentLoggingDateTime:yyyy-MM-dd_HHmm}.csv";
+            return field;
         }
     }
 
     private bool IsCurrentDateTimeValid()
     {
+        var dateTimeNow = DateTime.Now;
         return _applicationSettings.LoggingFileInterval switch
         {
-            "per minute" => _applicationSettings.CurrentLoggingDateTime.Minute == DateTime.Now.Minute,
-            "per hour" => _applicationSettings.CurrentLoggingDateTime.Hour == DateTime.Now.Hour,
-            "per day" => _applicationSettings.CurrentLoggingDateTime.Day == DateTime.Now.Day,
-            "per month" => _applicationSettings.CurrentLoggingDateTime.Month == DateTime.Now.Month,
-            "per year" => _applicationSettings.CurrentLoggingDateTime.Year == DateTime.Now.Year,
+            "per minute" => _applicationSettings.CurrentLoggingDateTime.Minute == dateTimeNow.Minute,
+            "per hour" => _applicationSettings.CurrentLoggingDateTime.Hour == dateTimeNow.Hour,
+            "per day" => _applicationSettings.CurrentLoggingDateTime.Day == dateTimeNow.Day,
+            "per month" => _applicationSettings.CurrentLoggingDateTime.Month == dateTimeNow.Month,
+            "per year" => _applicationSettings.CurrentLoggingDateTime.Year == dateTimeNow.Year,
             _ => true
         };
     }

@@ -5,6 +5,4 @@ namespace PingResponseLog.Internal;
 
 /// <summary>
 /// </summary>
-public interface IPingProcessor : IValue<PingLog>
-{
-}
+public interface IPingProcessor : IValue<PingLog>;

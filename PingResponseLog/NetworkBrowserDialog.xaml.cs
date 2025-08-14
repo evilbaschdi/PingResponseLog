@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
-using EvilBaschdi.Settings.ByMachineAndUser;
+using EvilBaschdi.Core.Settings.ByMachineAndUser;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using PingResponseLog.Internal;

@@ -6,7 +6,7 @@ namespace PingResponseLog.Internal;
 /// <summary>
 ///     Interface for NetworkBrowser.
 /// </summary>
-public interface INetworkBrowser : IValueOfList<string>
+public interface INetworkBrowser : IListOf<string>
 {
     /// <summary>
     ///     Contains an Exception if Value has thrown some.
